@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const UserRouter = require("../controllers/users");
+const {
+  get,
+  getById,
+  createUser,
+  updateProfile,
+  updateAvatar,
+} = require("../controllers/users");
 
 // PATCH /users/me — обновляет профиль
-router.patch("/users/me", UserRouter.updateProfile);
-router.patch("/users", UserRouter.post);
+router.patch("/users/me", updateProfile);
+router.patch("/users", createUser);
 
 // PATCH /users/me/avatar — обновляет аватар
-router.patch("/users/me/avatar", UserRouter.updateAvatar);
+router.patch("/users/me/avatar", updateAvatar);
 
 module.exports = router;

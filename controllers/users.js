@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 
 // GET /users - возвращает всех пользователей
-router.get("/users", async (req, res) => {
+module.exports.get("/users", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -13,7 +13,7 @@ router.get("/users", async (req, res) => {
 });
 
 // GET /users/:userId - возвращает пользователя по _id
-router.get("/users/:userId", async (req, res) => {
+module.exports.getById("/users/:userId", async (req, res) => {
   const { userId } = bodyParserreq.params;
   try {
     const user = await User.findById(userId);
@@ -28,7 +28,7 @@ router.get("/users/:userId", async (req, res) => {
 });
 
 // POST /users - создаёт пользователя
-router.post("/users", async (req, res) => {
+module.exports.createUser("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
   try {
@@ -41,7 +41,7 @@ router.post("/users", async (req, res) => {
   }
 });
 
-router.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
@@ -63,7 +63,7 @@ router.updateProfile = (req, res) => {
 };
 
 // PATCH /users/me/avatar — обновляет аватар
-router.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
@@ -79,5 +79,3 @@ router.updateAvatar = (req, res) => {
       res.status(500).json({ error: "Failed to update avatar" });
     });
 };
-
-module.exports = router;
