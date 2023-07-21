@@ -33,20 +33,20 @@ module.exports.getById =
   });
 
 // POST /users - создаёт пользователя
-module.exports.createUser =
-  ("/users",
-  async (req, res) => {
-    const { name, about, avatar } = req.body;
-    console.log(req.body);
-    try {
-      const newUser = await User.create({ name, about, avatar });
-      console.log(newUser);
-      res.status(201).json(newUser);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Failed to create user" });
-    }
-  });
+// Ваш код createUser
+// POST /users - создаёт пользователя
+module.exports.createUser = async (req, res) => {
+  const { name, about, avatar } = req.body;
+  console.log(req.body);
+  try {
+    const newUser = await User.create({ name, about, avatar });
+    console.log(newUser);
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to create user" });
+  }
+};
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/user");
 const {
   getUsers,
   getById,
@@ -17,7 +18,7 @@ router.patch("/users/me/avatar", updateAvatar);
 // GET /users - возвращает всех пользователей
 router.get("/users", async (req, res) => {
   try {
-    const users = await getUsers(); // Используем функцию getUsers, которую импортировали из контроллера
+    const users = await User.find();
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch users" });
@@ -28,7 +29,7 @@ router.get("/users", async (req, res) => {
 router.get("/users/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await getById(userId); // Используем функцию getById из контроллера
+    const user = await User.findById(userId);
     if (user) {
       res.json(user);
     } else {
@@ -44,7 +45,7 @@ router.post("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
   try {
-    const newUser = await createUser(name, about, avatar); // Используем функцию createUser из контроллера
+    const newUser = await User.create({ name, about, avatar });
     console.log(newUser);
     res.status(201).json(newUser);
   } catch (error) {
