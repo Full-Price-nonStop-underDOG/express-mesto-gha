@@ -4,7 +4,7 @@ const User = require("../models/user");
 const {
   getUsers,
   getById,
-  createUser,
+
   updateProfile,
   updateAvatar,
 } = require("../controllers/users");
@@ -46,16 +46,17 @@ router.post("/users", async (req, res) => {
   console.log(req.body);
 
   try {
+    if (!name || name.length === 0) {
+      return res.status(400).json({
+        error: "Name is required and should not be empty",
+        message: "wtf",
+      });
+    }
     if (name.length < 2 || name.length > 30) {
       return res.status(400).json({
         error: "Name should be between 2 and 30 characters long",
-        message: "Failed to create user2",
+        message: "Failed to create username",
       });
-    }
-    if (!name || name.trim().length === 0) {
-      return res
-        .status(400)
-        .json({ error: "Name is required and should not be empty" });
     }
 
     if (about.length < 2 || about.length > 30) {
