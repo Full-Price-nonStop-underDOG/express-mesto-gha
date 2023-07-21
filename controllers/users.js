@@ -40,11 +40,6 @@ module.exports.createUser = async (req, res) => {
   console.log(req.body);
 
   // Добавьте проверку на длину поля name
-  if (name.length < 2) {
-    return res
-      .status(400)
-      .json({ error: "Name should be at least 2 characters long" });
-  }
 
   try {
     const newUser = await User.create({ name, about, avatar });
