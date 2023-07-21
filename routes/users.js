@@ -52,6 +52,11 @@ router.post("/users", async (req, res) => {
         message: "Failed to create user2",
       });
     }
+    if (!name || name.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Name is required and should not be empty" });
+    }
 
     if (about.length < 2 || about.length > 30) {
       return res.status(400).json({
