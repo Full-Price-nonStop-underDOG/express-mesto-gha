@@ -45,27 +45,22 @@ router.post("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
 
-  if (name.length < 2 || name.length > 30) {
-    return res
-      .status(400)
-      .json({
+  try {
+    if (name.length < 2 || name.length > 30) {
+      return res.status(400).json({
         error: "Name should be between 2 and 30 characters long",
         message: "Failed to create user",
       });
-  }
-
-  try {
+    }
     const newUser = await User.create({ name, about, avatar });
     console.log(newUser);
     res.status(201).json(newUser);
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        error: "Failed to create user",
-        message: "Failed to create user",
-      });
+    res.status(500).json({
+      error: "Failed to create user",
+      message: "Failed to create user",
+    });
   }
 });
 
