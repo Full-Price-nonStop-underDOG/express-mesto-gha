@@ -44,11 +44,7 @@ router.get("/users/:userId", async (req, res) => {
 router.post("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
-  if (name.length < 2) {
-    return res
-      .status(400)
-      .json({ error: "Name should be at least 2 characters long" });
-  }
+
   try {
     const newUser = await User.create({ name, about, avatar });
     console.log(newUser);
