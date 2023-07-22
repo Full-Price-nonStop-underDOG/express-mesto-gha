@@ -44,6 +44,7 @@ router.get("/users/:userId", async (req, res) => {
 router.post("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
+  console.log(req.body);
 
   try {
     if (!name || name.length === 0) {
