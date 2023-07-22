@@ -44,15 +44,14 @@ router.get("/users/:userId", async (req, res) => {
 router.post("/users", async (req, res) => {
   const { name, about, avatar } = req.body;
   console.log(req.body);
-  console.log(req.body);
 
   try {
-    if (!name || name.length === 0) {
-      return res.status(400).json({
-        error: "Name is required and should not be empty",
-        message: "wtf",
-      });
+    if (!name || name.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Name is required and should not be empty" });
     }
+
     if (name.length < 2 || name.length > 30) {
       return res.status(400).json({
         error: "Name should be between 2 and 30 characters long",
@@ -62,9 +61,15 @@ router.post("/users", async (req, res) => {
 
     if (about.length < 2 || about.length > 30) {
       return res.status(400).json({
-        error: "Name should be between 2 and 30 characters long",
+        error: "About should be between 2 and 30 characters long",
         message: "Failed to create user3",
       });
+    }
+
+    if (!avatar || avatar.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Avatar is required and should not be empty" });
     }
 
     const newUser = await User.create({ name, about, avatar });
