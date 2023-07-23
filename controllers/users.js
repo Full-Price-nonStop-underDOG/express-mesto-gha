@@ -41,9 +41,10 @@ module.exports.createUser = async (req, res) => {
 
   try {
     if (!name || name.length === 0) {
-      return res
-        .status(ERROR_CODE)
-        .json({ error: "Name is required and should not be empty" });
+      return res.status(ERROR_CODE).json({
+        error: "Name is required and should not be empty",
+        message: "w",
+      });
     }
 
     if (name.length < 2 || name.length > 30) {
@@ -57,7 +58,10 @@ module.exports.createUser = async (req, res) => {
     if (!about || about.length === 0) {
       return res
         .status(ERROR_CODE)
-        .json({ error: "About is required and should not be empty" });
+        .json({
+          error: "About is required and should not be empty",
+          message: "w",
+        });
     }
 
     if (about.length < 2 || about.length > 30) {
@@ -70,7 +74,10 @@ module.exports.createUser = async (req, res) => {
     if (!avatar || avatar.length === 0) {
       return res
         .status(ERROR_CODE)
-        .json({ error: "Avatar is required and should not be empty" });
+        .json({
+          error: "Avatar is required and should not be empty",
+          message: "w",
+        });
     }
 
     const newUser = await User.create({ name, about, avatar });
