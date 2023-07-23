@@ -37,42 +37,53 @@ module.exports.getById = async (req, res) => {
 // POST /users - создаёт пользователя
 module.exports.createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
+  console.log(req.body);
 
   try {
     if (!name || name.trim().length === 0) {
       return res
         .status(ERROR_CODE)
-        .json({ message: "Name is required and should not be empty" });
+        .json({ error: "Name is required and should not be empty" });
     }
 
     if (name.length < 2 || name.length > 30) {
+      return res.status(ERROR_CODE).json({
+        error: "Name should be between 2 and 30 characters long",
+        message: "Failed to create username",
+      });
+    }
+
+    // Add the validation for the "about" field
+    if (!about || about.length === 0) {
       return res
         .status(ERROR_CODE)
-        .json({ message: "Name should be between 2 and 30 characters long" });
+        .json({ error: "About is required and should not be empty" });
     }
 
     if (about.length < 2 || about.length > 30) {
-      return res
-        .status(ERROR_CODE)
-        .json({ message: "About should be between 2 and 30 characters long" });
+      return res.status(ERROR_CODE).json({
+        error: "About should be between 2 and 30 characters long",
+        message: "Failed to create user",
+      });
     }
 
-    if (!avatar || avatar.trim().length === 0) {
+    if (!avatar || avatar.length === 0) {
       return res
         .status(ERROR_CODE)
-        .json({ message: "Avatar is required and should not be empty" });
+        .json({ error: "Avatar is required and should not be empty" });
     }
 
     const newUser = await User.create({ name, about, avatar });
+    console.log(newUser);
     res.status(201).json(newUser);
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(ERROR_CODE).json({ message: error.message });
     }
-    res.status(500).json({ message: "Failed to create user" });
+    console.log(error);
+    res.status(500).json({ error: "Failed to create user" });
   }
 };
-
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
