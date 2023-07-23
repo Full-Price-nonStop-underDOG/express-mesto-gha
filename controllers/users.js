@@ -15,15 +15,17 @@ module.exports.getUsers = async (req, res) => {
 };
 
 // GET /users/:userId - возвращает пользователя по _id
-const user = await User.findById(userId);
+module.exports.getById = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(userId);
+
     if (user) {
-      const userData = {
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        _id: user._id,
-      };
-      res.json(userData);
+      res.json(user);
     } else {
       res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
     }
