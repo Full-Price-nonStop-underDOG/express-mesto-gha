@@ -43,14 +43,14 @@ module.exports.createUser = async (req, res) => {
     if (!name || name.length === 0) {
       return res.status(ERROR_CODE).json({
         error: "Name is required and should not be empty",
-        message: "w",
+        message: "wфыфы",
       });
     }
 
     if (name.length < 2 || name.length > 30) {
       return res.status(ERROR_CODE).json({
         error: "Name should be between 2 and 30 characters long",
-        message: "F",
+        message: "Fвмцвм",
       });
     }
 
@@ -58,21 +58,21 @@ module.exports.createUser = async (req, res) => {
     if (!about || about.length === 0) {
       return res.status(ERROR_CODE).json({
         error: "About is required and should not be empty",
-        message: "w",
+        message: "wымц",
       });
     }
 
     if (about.length < 2 || about.length > 30) {
       return res.status(ERROR_CODE).json({
         error: "About should be between 2 and 30 characters long",
-        message: "F",
+        message: "Fцкмци",
       });
     }
 
     if (!avatar || avatar.length === 0) {
       return res.status(ERROR_CODE).json({
         error: "Avatar is required and should not be empty",
-        message: "w",
+        message: "wцмц",
       });
     }
 
