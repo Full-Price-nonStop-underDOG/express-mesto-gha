@@ -40,7 +40,7 @@ module.exports.createUser = async (req, res) => {
   console.log(req.body);
 
   try {
-    if (!name || name.trim().length === 0) {
+    if (!name || name.length === 0) {
       return res
         .status(ERROR_CODE)
         .json({ error: "Name is required and should not be empty" });
