@@ -4,6 +4,15 @@ const User = require("./models/user");
 const mongoose = require("mongoose");
 const router = require("./routes/users");
 const bodyParser = require("body-parser");
+const cors = require("cors");
+// ...
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+    methods: ["GET", "PUT", "POST", "DELETE", "PATCH"],
+  })
+);
 
 app.use(express.json());
 
@@ -20,11 +29,11 @@ app.listen(3000, () => {
 
 app.use(router);
 
-app.use((req, res, next) => {
-  // Установить Content-Type для всех ответов на 'application/json'
-  res.setHeader("Content-Type", "application/json");
-  next();
-});
+// app.use((req, res, next) => {
+//   // Установить Content-Type для всех ответов на 'application/json'
+//   res.setHeader("Content-Type", "application/json");
+//   next();
+// });
 
 app.use((req, res, next) => {
   req.user = {
