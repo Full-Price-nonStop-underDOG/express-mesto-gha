@@ -88,7 +88,7 @@ module.exports.createUser = async (req, res) => {
   }
 };
 // PATCH /users/me — обновляет профиль
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
@@ -99,7 +99,9 @@ module.exports.updateProfile = (req, res) => {
   )
     .then((updatedUser) => {
       if (updatedUser) {
-        res.type("text/html; charset=utf-8").json(updatedUser);
+        return res.send(updatedUser);
+
+        throw new error("Пользователь с таким id не найден");
       } else {
         res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
