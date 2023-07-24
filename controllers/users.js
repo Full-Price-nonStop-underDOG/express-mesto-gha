@@ -99,7 +99,7 @@ module.exports.updateProfile = (req, res, next) => {
   )
     .then((updatedUser) => {
       if (updatedUser) {
-        return res.send(updatedUser);
+        return res.json(updatedUser);
       } else {
         res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
@@ -117,7 +117,7 @@ module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (updatedUser) {
-        res.send(updatedUser);
+        return res.json(updatedUser);
       } else {
         res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
