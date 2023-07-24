@@ -3,8 +3,12 @@ const app = express();
 const User = require("./models/user");
 const mongoose = require("mongoose");
 const router = require("./routes/users");
+const bodyParser = require("body-parser");
 
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb://localhost:27017/mestodb", {
   useNewUrlParser: true,
