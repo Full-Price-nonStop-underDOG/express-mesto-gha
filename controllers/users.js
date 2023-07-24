@@ -87,16 +87,19 @@ module.exports.createUser = async (req, res) => {
     res.status(500).json({ error: "Failed to create user" });
   }
 };
-
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  User.findByIdAndUpdate(userId, { name, about }, { new: true })
+  User.findByIdAndUpdate(
+    userId,
+    { name, about },
+    { new: true, runValidators: true }
+  )
     .then((updatedUser) => {
       if (updatedUser) {
-        res.type("text/html; charset=utf-8").json(updatedUser);
+        res.json(updatedUser);
       } else {
         res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
@@ -114,7 +117,7 @@ module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (updatedUser) {
-        res.type("text/html; charset=utf-8").json(updatedUser);
+        res.json(updatedUser);
       } else {
         res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }

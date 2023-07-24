@@ -17,6 +17,12 @@ app.listen(3000, () => {
 app.use(router);
 
 app.use((req, res, next) => {
+  // Установить Content-Type для всех ответов на 'application/json'
+  res.setHeader("Content-Type", "application/json");
+  next();
+});
+
+app.use((req, res, next) => {
   req.user = {
     _id: "64b1700aad09705f0e106235", // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
