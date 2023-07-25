@@ -91,7 +91,7 @@ module.exports.createUser = async (req, res) => {
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-
+  console.log(userId);
   User.findByIdAndUpdate(
     userId,
     { name, about },
@@ -123,6 +123,6 @@ module.exports.updateAvatar = (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(500).json({ message: "Failed to update avatar" });
+      res.status(400).json({ message: "Failed to update avatar" });
     });
 };
