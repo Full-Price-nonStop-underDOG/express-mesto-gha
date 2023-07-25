@@ -22,7 +22,7 @@ router.exports.createCard = (req, res) => {
   card
     .save()
     .then((newCard) => {
-      res.status(201).json(newCard);
+      res.status(201).send(newCard);
     })
     .catch((error) => {
       res.status(500).json({ error: "Failed to create card" });
