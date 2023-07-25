@@ -10,7 +10,7 @@ module.exports.getUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch users" });
+    res.status(400).json({ message: "Failed to fetch users" });
   }
 };
 
@@ -30,7 +30,7 @@ module.exports.getById = async (req, res) => {
       res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch user" });
+    res.status(400).json({ message: "Failed to fetch user" });
   }
 };
 
@@ -84,7 +84,7 @@ module.exports.createUser = async (req, res) => {
       return res.status(ERROR_CODE).json({ message: error.message });
     }
     console.log(error);
-    res.status(500).json({ error: "Failed to create user" });
+    res.status(400).json({ error: "Failed to create user" });
   }
 };
 // PATCH /users/me — обновляет профиль
@@ -105,7 +105,7 @@ module.exports.updateProfile = (req, res, next) => {
       }
     })
     .catch((error) => {
-      res.status(500).json({ message: "Failed to update profile" });
+      res.status(400).json({ message: "Failed to update profile" });
     });
 };
 
