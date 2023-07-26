@@ -41,5 +41,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
+
 app.use(router);
 app.use(routerCards);
