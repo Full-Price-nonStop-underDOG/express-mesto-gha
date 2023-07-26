@@ -1,6 +1,7 @@
 const express = require("express");
 const Card = require("../models/card");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res) => {
@@ -40,8 +41,16 @@ module.exports.createCard = (req, res) => {
 };
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
+const mongoose = require("mongoose");
+
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(cardId)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid card ID", message: "Wrong card id" });
+  }
 
   Card.findByIdAndDelete(cardId)
     .then((deletedCard) => {
@@ -50,7 +59,7 @@ module.exports.deleteCard = (req, res) => {
       } else {
         res
           .status(400)
-          .json({ error: "Card not found", messag: "Wrong card id" });
+          .json({ error: "Card not found", message: "Wrong card id" });
       }
     })
     .catch((error) => {
@@ -58,10 +67,8 @@ module.exports.deleteCard = (req, res) => {
     });
 };
 
-// PUT /cards/:cardId/likes — поставить лайк карточке
-const mongoose = require("mongoose");
-
-module.exports.likeCard = async (req, res) => {
+// delete /cards/:cardId/likes — удалить лайк карточке
+module.exports.dislikeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -76,39 +83,8 @@ module.exports.likeCard = async (req, res) => {
 
     if (!card) {
       return res
-        .status(404)
+        .status(400)
         .json({ error: "Card not found", message: "Wrong like id" });
-    }
-
-    if (card.likes.includes(userId)) {
-      return res.status(400).json({
-        error: "User has already liked this card",
-        message: "Incorrect like id",
-      });
-    }
-
-    card.likes.push(userId);
-    await card.save();
-
-    res.json(card);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to like card" });
-  }
-};
-
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
-module.exports.dislikeCard = async (req, res) => {
-  const { cardId } = req.params;
-  const userId = req.user._id;
-
-  try {
-    const card = await Card.findById(cardId);
-
-    if (!card) {
-      return res.status(400).json({
-        error: "Card not found",
-        message: "Removing a like from a card with an incorrect id",
-      });
     }
 
     const index = card.likes.indexOf(userId);
@@ -116,8 +92,7 @@ module.exports.dislikeCard = async (req, res) => {
     if (index === -1) {
       return res.status(400).json({
         error: "User has not liked this card",
-        message:
-          "Removing a like from a card with an id that does not exist in the database",
+        message: "Incorrect like id",
       });
     }
 
