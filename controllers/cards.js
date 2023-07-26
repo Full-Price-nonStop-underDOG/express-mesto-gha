@@ -1,7 +1,6 @@
 const express = require("express");
 const Card = require("../models/card");
 const router = express.Router();
-const mongoose = require("mongoose");
 
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res) => {
