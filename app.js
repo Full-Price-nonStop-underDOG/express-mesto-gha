@@ -31,8 +31,6 @@ app.use((req, res, next) => {
   req.user = {
     _id: "64ba828ea8a3962f21b370f2", // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
-  console.log("вывели рек", req.user);
-  next();
 });
 
 app.use((req, res, next) => {
@@ -43,6 +41,7 @@ app.use((req, res, next) => {
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
+  next();
 });
 
 app.use(router);
