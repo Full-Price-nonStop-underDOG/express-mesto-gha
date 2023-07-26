@@ -69,16 +69,14 @@ module.exports.likeCard = async (req, res) => {
     if (!card) {
       return res
         .status(400)
-        .json({ error: "Card not found", messag: "Wrong like id" });
+        .json({ error: "Card not found", message: "Wrong like id" });
     }
 
     if (card.likes.includes(userId)) {
-      return res
-        .status(400)
-        .json({
-          error: "User has already liked this card",
-          messag: "Incorrect like id",
-        });
+      return res.status(400).json({
+        error: "User has already liked this card",
+        message: "Incorrect like id",
+      });
     }
 
     card.likes.push(userId);
@@ -99,24 +97,20 @@ module.exports.dislikeCard = async (req, res) => {
     const card = await Card.findById(cardId);
 
     if (!card) {
-      return res
-        .status(400)
-        .json({
-          error: "Card not found",
-          message: "Removing a like from a card with an incorrect id",
-        });
+      return res.status(400).json({
+        error: "Card not found",
+        message: "Removing a like from a card with an incorrect id",
+      });
     }
 
     const index = card.likes.indexOf(userId);
 
     if (index === -1) {
-      return res
-        .status(400)
-        .json({
-          error: "User has not liked this card",
-          message:
-            "Removing a like from a card with an id that does not exist in the database",
-        });
+      return res.status(400).json({
+        error: "User has not liked this card",
+        message:
+          "Removing a like from a card with an id that does not exist in the database",
+      });
     }
 
     card.likes.splice(index, 1);
