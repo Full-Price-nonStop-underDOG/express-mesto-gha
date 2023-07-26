@@ -3,6 +3,7 @@ const app = express();
 const User = require("./models/user");
 const mongoose = require("mongoose");
 const router = require("./routes/users");
+const routerCards = require("./routes/cards");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 // ...
@@ -41,3 +42,4 @@ app.use((req, res, next) => {
 });
 
 app.use(router);
+app.use(routerUsers);
