@@ -31,11 +31,8 @@ app.use((req, res, next) => {
   req.user = {
     _id: "64c1194f6128cbaa7041d519", // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
-<<<<<<< HEAD
 
   next();
-=======
->>>>>>> refs/remotes/origin/main
 });
 
 app.use((req, res, next) => {
@@ -48,5 +45,4 @@ app.use(router);
 app.use(routerCards);
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
-  next();
 });
