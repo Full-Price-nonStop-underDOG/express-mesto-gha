@@ -75,11 +75,15 @@ module.exports.createUser = async (req, res) => {
         message: "wцмц",
       });
     }
-    const { _id } = req.params;
 
-    const newUser = await User.create({ name, about, avatar, _id });
+    const newUser = await User.create({ name, about, avatar });
+
+    if (!newUser._id) {
+      return res.status(500).json({ error: "Failed to create user" });
+    }
+
     console.log(newUser);
-    res.status(201).send(newUser);
+    res.status(201).json(newUser);
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(ERROR_CODE).json({ message: error.message });
