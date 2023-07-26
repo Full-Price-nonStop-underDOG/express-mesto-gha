@@ -19,11 +19,9 @@ router.exports.createCard = (req, res) => {
 
   const card = new Card({ name, link, owner: _id });
 
-  card
-    .save()
-    .then((newCard) => {
-      res.status(201).send(newCard);
-    })
+  Card.create({ name, link, owner: userId })
+    .then((card) => res.status(201).send(card))
+
     .catch((error) => {
       res.status(500).json({ error: "Failed to create card" });
     });
