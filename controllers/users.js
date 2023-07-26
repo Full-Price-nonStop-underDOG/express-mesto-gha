@@ -83,7 +83,7 @@ module.exports.createUser = async (req, res) => {
     }
 
     console.log(newUser);
-    res.status(201).json(newUser);
+    res.status(201).json({ newUser, message: "ejrkvejkrfv" });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(ERROR_CODE).json({ message: error.message });

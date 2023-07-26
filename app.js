@@ -29,9 +29,9 @@ app.listen(3000, () => {
 });
 app.use((req, res, next) => {
   req.user = {
-    _id: "64ba828ea8a3962f21b370f2", // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: "64c1194f6128cbaa7041d519", // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
-  console.log("вывели рек", req.user);
+
   next();
 });
 
@@ -41,9 +41,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(router);
+app.use(routerCards);
 app.use((req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
-
-app.use(router);
-app.use(routerCards);
