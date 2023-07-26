@@ -25,6 +25,13 @@ module.exports.createCard = (req, res) => {
     });
   }
 
+  if (!link) {
+    return res.status(400).json({
+      error: "You need to write link",
+      message: "You need to write link",
+    });
+  }
+
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((error) => {
