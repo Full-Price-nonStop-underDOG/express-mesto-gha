@@ -1,6 +1,6 @@
 const express = require("express");
 const Card = require("../models/card");
-const router = express.Router();
+
 const mongoose = require("mongoose");
 
 // GET /cards — возвращает все карточки
@@ -41,8 +41,6 @@ module.exports.createCard = (req, res) => {
 };
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
-const mongoose = require("mongoose");
-
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
@@ -58,7 +56,7 @@ module.exports.deleteCard = (req, res) => {
         res.json(deletedCard);
       } else {
         res
-          .status(400)
+          .status(404)
           .json({ error: "Card not found", message: "Wrong card id" });
       }
     })
@@ -66,8 +64,45 @@ module.exports.deleteCard = (req, res) => {
       res.status(500).json({ error: "Failed to delete card" });
     });
 };
+// PUT /cards/:cardId/likes — поставить лайк карточке
 
-// delete /cards/:cardId/likes — удалить лайк карточке
+module.exports.likeCard = async (req, res) => {
+  const { cardId } = req.params;
+  const userId = req.user._id;
+
+  if (!mongoose.Types.ObjectId.isValid(cardId)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid card ID", message: "Wrong like id" });
+  }
+
+  try {
+    const card = await Card.findById(cardId);
+
+    if (!card) {
+      return res
+        .status(404)
+        .json({ error: "Card not found", message: "Wrong like id" });
+    }
+
+    if (card.likes.includes(userId)) {
+      return res.status(400).json({
+        error: "User has already liked this card",
+        message: "Incorrect like id",
+      });
+    }
+
+    card.likes.push(userId);
+    await card.save();
+
+    res.json(card);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to like card" });
+  }
+};
+
+// DELETE /cards/:cardId/likes — убрать лайк с карточки
+
 module.exports.dislikeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
@@ -83,7 +118,7 @@ module.exports.dislikeCard = async (req, res) => {
 
     if (!card) {
       return res
-        .status(400)
+        .status(404)
         .json({ error: "Card not found", message: "Wrong like id" });
     }
 
