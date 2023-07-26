@@ -1,6 +1,7 @@
 const express = require("express");
 const Card = require("../models/card");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res) => {
@@ -59,16 +60,24 @@ module.exports.deleteCard = (req, res) => {
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
+const mongoose = require("mongoose");
+
 module.exports.likeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
+
+  if (!mongoose.Types.ObjectId.isValid(cardId)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid card ID", message: "Wrong like id" });
+  }
 
   try {
     const card = await Card.findById(cardId);
 
     if (!card) {
       return res
-        .status(400)
+        .status(404)
         .json({ error: "Card not found", message: "Wrong like id" });
     }
 
