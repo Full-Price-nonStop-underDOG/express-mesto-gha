@@ -75,10 +75,11 @@ module.exports.createUser = async (req, res) => {
         message: "wцмц",
       });
     }
+    const { _id } = req.params;
 
-    const newUser = await User.create({ name, about, avatar });
+    const newUser = await User.create({ name, about, avatar, _id });
     console.log(newUser);
-    res.status(201).json(newUser);
+    res.status(201).send(newUser);
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(ERROR_CODE).json({ message: error.message });
@@ -87,6 +88,7 @@ module.exports.createUser = async (req, res) => {
     res.status(400).json({ error: "Failed to create user" });
   }
 };
+
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
