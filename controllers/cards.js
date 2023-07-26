@@ -1,8 +1,9 @@
+const express = require("express");
 const Card = require("../models/card");
 const router = express.Router();
 
 // GET /cards — возвращает все карточки
-router.getAllCards = (req, res) => {
+module.exports.getAllCards = (req, res) => {
   Card.find()
     .then((cards) => {
       res.json(cards);
@@ -13,7 +14,7 @@ router.getAllCards = (req, res) => {
 };
 
 // POST /cards — создаёт карточку
-router.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
@@ -28,7 +29,7 @@ router.exports.createCard = (req, res) => {
 };
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
-router.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndDelete(cardId)
@@ -45,7 +46,7 @@ router.exports.deleteCard = (req, res) => {
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
-router.exports.likeCard = async (req, res) => {
+module.exports.likeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -72,7 +73,7 @@ router.exports.likeCard = async (req, res) => {
 };
 
 // DELETE /cards/:cardId/likes — убрать лайк с карточки
-router.exports.dislikeCard = async (req, res) => {
+module.exports.dislikeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
@@ -97,5 +98,3 @@ router.exports.dislikeCard = async (req, res) => {
     res.status(500).json({ error: "Failed to dislike card" });
   }
 };
-
-module.exports = router;
