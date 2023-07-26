@@ -18,9 +18,15 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
+  if (!name || name.length < 2 || name.length > 30) {
+    return res.status(400).json({
+      error: "Name should be between 2 and 30 characters long",
+      message: "name is less than 2 symbols or more than 30",
+    });
+  }
+
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
-
     .catch((error) => {
       res.status(500).json({ error: "Failed to create card" });
     });
