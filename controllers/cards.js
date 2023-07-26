@@ -48,7 +48,9 @@ module.exports.deleteCard = (req, res) => {
       if (deletedCard) {
         res.json(deletedCard);
       } else {
-        res.status(404).json({ error: "Card not found" });
+        res
+          .status(400)
+          .json({ error: "Card not found", messag: "Wrong card id" });
       }
     })
     .catch((error) => {
