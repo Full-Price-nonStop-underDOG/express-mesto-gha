@@ -70,7 +70,7 @@ module.exports.deleteCard = (req, res) => {
         res.json(deletedCard);
       } else {
         res
-          .status(ERROR_CODE_NOT_FOUND)
+          .status(ERROR_CODE)
           .json({ error: "Card not found", message: "Wrong card id" });
       }
     })
@@ -115,7 +115,7 @@ module.exports.likeCard = async (req, res) => {
     card.likes.push(userId);
     await card.save();
 
-    res.json(card);
+    res.status(200).json(card);
   } catch (error) {
     if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(ERROR_CODE).json({
