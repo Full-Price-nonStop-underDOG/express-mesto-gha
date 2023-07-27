@@ -159,7 +159,7 @@ module.exports.dislikeCard = async (req, res) => {
 
     if (index === -1) {
       return res.status(200).json({
-        error: "User has not liked this card",
+        error: "User has not liked this card.",
         message: "Incorrect like id",
       });
     }
