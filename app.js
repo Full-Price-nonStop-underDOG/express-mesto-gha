@@ -35,12 +35,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  // Установить Content-Type для всех ответов на 'application/json'
-  res.setHeader("Content-Type", "application/json");
-  next();
-});
-
 app.use(router);
 app.use(routerCards);
 app.use((req, res) => {

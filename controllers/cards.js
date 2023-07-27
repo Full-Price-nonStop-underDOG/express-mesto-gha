@@ -3,6 +3,10 @@ const Card = require("../models/card");
 
 const mongoose = require("mongoose");
 
+const ERROR_CODE = 400;
+const ERROR_CODE_NOT_FOUND = 404;
+const ERROR_CODE_SERVER_PROBLEM = 500;
+
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res) => {
   Card.find()
@@ -10,7 +14,9 @@ module.exports.getAllCards = (req, res) => {
       res.json(cards);
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to fetch cards" });
+      res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ error: "Failed to fetch cards" });
     });
 };
 
@@ -19,24 +25,32 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
-  if (!name || name.length < 2 || name.length > 30) {
-    return res.status(400).json({
-      error: "Name should be between 2 and 30 characters long",
-      message: "name is less than 2 symbols or more than 30",
-    });
-  }
+  // if (!name || name.length < 2 || name.length > 30) {
+  //   return res.status(ERROR_CODE).json({
+  //     error: "Name should be between 2 and 30 characters long",
+  //     message: "name is less than 2 symbols or more than 30",
+  //   });
+  // }
 
-  if (!link) {
-    return res.status(400).json({
-      error: "You need to write link",
-      message: "You need to write link",
-    });
-  }
+  // if (!link) {
+  //   return res.status(ERROR_CODE).json({
+  //     error: "You need to write link",
+  //     message: "You need to write link",
+  //   });
+  // }
 
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((error) => {
-      res.status(500).json({ error: "Failed to create card" });
+      if (err.name === "ValidationError") {
+        return res.status(ERROR_CODE).json({
+          message: "Переданы некорректные данные при создании карточки",
+        });
+      } else {
+        res
+          .status(ERROR_CODE_SERVER_PROBLEM)
+          .json({ error: "Failed to create card" });
+      }
     });
 };
 
@@ -44,11 +58,11 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid card ID", message: "Wrong card id" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
+  //   return res
+  //     .status(ERROR_CODE)
+  //     .json({ error: "Invalid card ID", message: "Wrong card id" });
+  // }
 
   Card.findByIdAndDelete(cardId)
     .then((deletedCard) => {
@@ -56,12 +70,14 @@ module.exports.deleteCard = (req, res) => {
         res.json(deletedCard);
       } else {
         res
-          .status(404)
+          .status(ERROR_CODE_NOT_FOUND)
           .json({ error: "Card not found", message: "Wrong card id" });
       }
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to delete card" });
+      res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ error: "Failed to delete card" });
     });
 };
 // PUT /cards/:cardId/likes — поставить лайк карточке
@@ -70,34 +86,46 @@ module.exports.likeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid card ID", message: "Wrong like id" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
+  //   return res
+  //     .status(ERROR_CODE)
+  //     .json({ error: "Invalid card ID", message: "Wrong like id" });
+  // }
 
   try {
-    const card = await Card.findById(cardId);
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      { $addToSet: { likes: userId } },
+      { new: true }
+    );
 
     if (!card) {
       return res
-        .status(404)
+        .status(ERROR_CODE_NOT_FOUND)
         .json({ error: "Card not found", message: "Wrong like id" });
     }
 
-    if (card.likes.includes(userId)) {
-      return res.status(400).json({
-        error: "User has already liked this card",
-        message: "Incorrect like id",
-      });
-    }
+    // if (card.likes.includes(userId)) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "User has already liked this card",
+    //     message: "Incorrect like id",
+    //   });
+    // }
 
     card.likes.push(userId);
     await card.save();
 
     res.json(card);
   } catch (error) {
-    res.status(500).json({ error: "Failed to like card" });
+    if (err.name === "ValidationError" || err.name === "CastError") {
+      return res.status(ERROR_CODE).json({
+        message: "Переданы некорректные данные при добавлении лайка карточке",
+      });
+    } else {
+      res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ error: "Failed to like card" });
+    }
   }
 };
 
@@ -107,35 +135,49 @@ module.exports.dislikeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid card ID", message: "Wrong like id" });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
+  //   return res
+  //     .status(ERROR_CODE)
+  //     .json({ error: "Invalid card ID", message: "Wrong like id" });
+  // }
 
   try {
-    const card = await Card.findById(cardId);
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      { $pull: { likes: userId } },
+      { new: true }
+    );
 
     if (!card) {
       return res
-        .status(404)
+        .status(ERROR_CODE_NOT_FOUND)
         .json({ error: "Card not found", message: "Wrong like id" });
     }
 
     const index = card.likes.indexOf(userId);
 
-    if (index === -1) {
-      return res.status(400).json({
-        error: "User has not liked this card",
-        message: "Incorrect like id",
-      });
-    }
+    // if (index === -1) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "User has not liked this card",
+    //     message: "Incorrect like id",
+    //   });
+    // }
 
     card.likes.splice(index, 1);
     await card.save();
 
     res.json(card);
   } catch (error) {
-    res.status(500).json({ error: "Failed to dislike card" });
+    if (err.name === "ValidationError" || err.name === "CastError") {
+      next(
+        new ERROR_CODE(
+          "Переданы некорректные данные при добавлении лайка карточке"
+        )
+      );
+    } else {
+      res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ error: "Failed to dislike card" });
+    }
   }
 };

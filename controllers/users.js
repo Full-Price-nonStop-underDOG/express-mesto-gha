@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const ERROR_CODE = 400;
 const ERROR_CODE_NOT_FOUND = 404;
+const ERROR_CODE_SERVER_PROBLEM = 500;
 
 // GET /users - возвращает всех пользователей
 module.exports.getUsers = async (req, res) => {
@@ -10,7 +11,9 @@ module.exports.getUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
   } catch (error) {
-    res.status(400).json({ message: "Failed to fetch users" });
+    res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ message: "Failed to fetch users" });
   }
 };
 
@@ -18,9 +21,9 @@ module.exports.getUsers = async (req, res) => {
 module.exports.getById = async (req, res) => {
   const { userId } = req.params;
   try {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
-    }
+    // if (!mongoose.Types.ObjectId.isValid(userId)) {
+    //   return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
+    // }
 
     const user = await User.findById(userId);
 
@@ -30,66 +33,71 @@ module.exports.getById = async (req, res) => {
       res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
     }
   } catch (error) {
-    res.status(400).json({ message: "Failed to fetch user" });
+    res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ message: "Failed to fetch user" });
   }
 };
 
 // POST /users - создаёт пользователя
 module.exports.createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
-  console.log(req.body);
 
   try {
-    if (!name || name.length === 0) {
-      return res.status(ERROR_CODE).json({
-        error: "Name is required and should not be empty",
-        message: "wфыфы",
-      });
-    }
+    // if (!name || name.length === 0) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "Name is required and should not be empty",
+    //     message: "wфыфы",
+    //   });
+    // }
 
-    if (name.length < 2 || name.length > 30) {
-      return res.status(ERROR_CODE).json({
-        error: "Name should be between 2 and 30 characters long",
-        message: "Fвмцвм",
-      });
-    }
+    // if (name.length < 2 || name.length > 30) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "Name should be between 2 and 30 characters long",
+    //     message: "Fвмцвм",
+    //   });
+    // }
 
     // Add the validation for the "about" field
-    if (!about || about.length === 0) {
-      return res.status(ERROR_CODE).json({
-        error: "About is required and should not be empty",
-        message: "wымц",
-      });
-    }
+    // if (!about || about.length === 0) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "About is required and should not be empty",
+    //     message: "wымц",
+    //   });
+    // }
 
-    if (about.length < 2 || about.length > 30) {
-      return res.status(ERROR_CODE).json({
-        error: "About should be between 2 and 30 characters long",
-        message: "Fцкмци",
-      });
-    }
+    // if (about.length < 2 || about.length > 30) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "About should be between 2 and 30 characters long",
+    //     message: "Fцкмци",
+    //   });
+    // }
 
-    if (!avatar || avatar.length === 0) {
-      return res.status(ERROR_CODE).json({
-        error: "Avatar is required and should not be empty",
-        message: "wцмц",
-      });
-    }
+    // if (!avatar || avatar.length === 0) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: "Avatar is required and should not be empty",
+    //     message: "wцмц",
+    //   });
+    // }
 
     const newUser = await User.create({ name, about, avatar });
 
-    if (!newUser._id) {
-      return res.status(500).json({ error: "Failed to create user" });
-    }
+    // if (!newUser._id) {
+    //   return res
+    //     .status(ERROR_CODE_SERVER_PROBLEM)
+    //     .json({ error: "Failed to create user" });
+    // }
 
     console.log(newUser);
-    res.status(201).json({ newUser, message: "ejrkvejkrfv" });
+    res.status(201).json({ newUser });
   } catch (error) {
-    if (error.name === "ValidationError") {
+    if (error.name === "ValidationError" || err.name === "CastError") {
       return res.status(ERROR_CODE).json({ message: error.message });
     }
     console.log(error);
-    res.status(400).json({ error: "Failed to create user" });
+    res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ error: "Failed to create user" });
   }
 };
 
@@ -111,7 +119,15 @@ module.exports.updateProfile = (req, res, next) => {
       }
     })
     .catch((error) => {
-      res.status(400).json({ message: "Failed to update profile" });
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        return res.status(ERROR_CODE).json({
+          message: "Переданы некорректные данные при обновлении профиля",
+        });
+      } else {
+        res
+          .status(ERROR_CODE_SERVER_PROBLEM)
+          .json({ message: "Failed to update profile" });
+      }
     });
 };
 
@@ -129,6 +145,14 @@ module.exports.updateAvatar = (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(400).json({ message: "Failed to update avatar" });
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        return res.status(ERROR_CODE).json({
+          message: "Переданы некорректные данные при обновлении профиля",
+        });
+      } else {
+        res
+          .status(ERROR_CODE_SERVER_PROBLEM)
+          .json({ message: "Failed to update avatar" });
+      }
     });
 };
