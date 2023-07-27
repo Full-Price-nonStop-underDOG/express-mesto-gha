@@ -91,7 +91,7 @@ module.exports.createUser = async (req, res) => {
     console.log(newUser);
     res.status(201).json({ newUser });
   } catch (error) {
-    if (error.name === "ValidationError" || err.name === "CastError") {
+    if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(ERROR_CODE).json({ message: error.message });
     }
     console.log(error);
@@ -119,7 +119,7 @@ module.exports.updateProfile = (req, res, next) => {
       }
     })
     .catch((error) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
+      if (error.name === "ValidationError" || error.name === "CastError") {
         return res.status(ERROR_CODE).json({
           message: "Переданы некорректные данные при обновлении профиля",
         });
@@ -145,7 +145,7 @@ module.exports.updateAvatar = (req, res) => {
       }
     })
     .catch((error) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
+      if (error.name === "ValidationError" || error.name === "CastError") {
         return res.status(ERROR_CODE).json({
           message: "Переданы некорректные данные при обновлении профиля",
         });

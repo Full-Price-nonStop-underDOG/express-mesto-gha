@@ -42,7 +42,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((error) => {
-      if (err.name === "ValidationError") {
+      if (error.name === "ValidationError") {
         return res.status(ERROR_CODE).json({
           message: "Переданы некорректные данные при создании карточки",
         });
@@ -117,7 +117,7 @@ module.exports.likeCard = async (req, res) => {
 
     res.json(card);
   } catch (error) {
-    if (err.name === "ValidationError" || err.name === "CastError") {
+    if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(ERROR_CODE).json({
         message: "Переданы некорректные данные при добавлении лайка карточке",
       });
@@ -168,7 +168,7 @@ module.exports.dislikeCard = async (req, res) => {
 
     res.json(card);
   } catch (error) {
-    if (err.name === "ValidationError" || err.name === "CastError") {
+    if (error.name === "ValidationError" || error.name === "CastError") {
       next(
         new ERROR_CODE(
           "Переданы некорректные данные при добавлении лайка карточке"
