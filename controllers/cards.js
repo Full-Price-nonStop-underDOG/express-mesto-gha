@@ -75,12 +75,10 @@ module.exports.deleteCard = (req, res) => {
       }
     })
     .catch((error) => {
-      res
-        .status(ERROR_CODE)
-        .json({
-          error: "Failed to delete card",
-          message: "Deleting a card with an incorrect id",
-        });
+      res.status(ERROR_CODE).json({
+        error: "Failed to delete card",
+        message: "Deleting a card with an incorrect id",
+      });
     });
 };
 // PUT /cards/:cardId/likes — поставить лайк карточке
@@ -160,7 +158,7 @@ module.exports.dislikeCard = async (req, res) => {
     const index = card.likes.indexOf(userId);
 
     if (index === -1) {
-      return res.status(ERROR_CODE).json({
+      return res.status(200).json({
         error: "User has not liked this card",
         message: "Incorrect like id",
       });
