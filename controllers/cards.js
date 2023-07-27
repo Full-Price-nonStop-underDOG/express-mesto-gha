@@ -169,11 +169,9 @@ module.exports.dislikeCard = async (req, res) => {
     //res.json(card);
   } catch (error) {
     if (error.name === "ValidationError" || error.name === "CastError") {
-      next(
-        new ERROR_CODE(
-          "Переданы некорректные данные при добавлении лайка карточке"
-        )
-      );
+      return res.status(ERROR_CODE).json({
+        message: "Переданы некорректные данные при удалении лайка карточки",
+      });
     } else {
       res
         .status(ERROR_CODE_SERVER_PROBLEM)
