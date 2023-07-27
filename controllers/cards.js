@@ -154,7 +154,7 @@ module.exports.dislikeCard = async (req, res) => {
         .json({ error: "Card not found", message: "Wrong like id" });
     }
 
-    const index = card.likes.indexOf(userId);
+    //const index = card.likes.indexOf(userId);
 
     // if (index === -1) {
     //   return res.status(ERROR_CODE).json({
@@ -163,10 +163,10 @@ module.exports.dislikeCard = async (req, res) => {
     //   });
     // }
 
-    card.likes.splice(index, 1);
-    await card.save();
+    //card.likes.splice(index, 1);
+    //await card.save();
 
-    res.json(card);
+    //res.json(card);
   } catch (error) {
     if (error.name === "ValidationError" || error.name === "CastError") {
       next(
