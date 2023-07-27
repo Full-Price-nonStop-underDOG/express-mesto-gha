@@ -30,12 +30,10 @@ module.exports.getById = async (req, res) => {
     if (user) {
       res.json(user);
     } else {
-      res.status(ERROR_CODE).json({ message: "User not found" });
+      res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
     }
   } catch (error) {
-    res
-      .status(ERROR_CODE_SERVER_PROBLEM)
-      .json({ message: "Failed to fetch user" });
+    res.status(ERROR_CODE).json({ message: "Failed to fetch user" });
   }
 };
 

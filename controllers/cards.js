@@ -70,14 +70,17 @@ module.exports.deleteCard = (req, res) => {
         res.json(deletedCard);
       } else {
         res
-          .status(ERROR_CODE)
+          .status(ERROR_CODE_NOT_FOUND)
           .json({ error: "Card not found", message: "Wrong card id" });
       }
     })
     .catch((error) => {
       res
-        .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ error: "Failed to delete card" });
+        .status(ERROR_CODE)
+        .json({
+          error: "Failed to delete card",
+          message: "Deleting a card with an incorrect id",
+        });
     });
 };
 // PUT /cards/:cardId/likes — поставить лайк карточке
@@ -166,7 +169,7 @@ module.exports.dislikeCard = async (req, res) => {
     card.likes.splice(index, 1);
     await card.save();
 
-    res.json(card);
+    res.status(200).json(card);
   } catch (error) {
     if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(ERROR_CODE).json({
