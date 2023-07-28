@@ -28,12 +28,10 @@ module.exports.getById = async (req, res) => {
     const user = await User.findById(userId);
 
     if (user) {
-      res.json(user);
-    } else {
-      res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
-    }
+      return res.json(user);
+    } return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
   } catch (error) {
-    res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Failed to fetch user' });
+    return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Failed to fetch user' });
   }
 };
 
@@ -44,12 +42,11 @@ module.exports.createUser = async (req, res) => {
   try {
     const newUser = await User.create({ name, about, avatar });
 
-    res.status(201).json({ newUser });
+    return res.status(201).json({ newUser });
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({ message: error.message });
-    }
-    res
+    } return res
       .status(ERROR_CODE_SERVER_PROBLEM)
       .json({ message: 'Failed to create user' });
   }

@@ -95,23 +95,15 @@ module.exports.likeCard = async (req, res) => {
       return res.status(ERROR_CODE).json({
         message: 'Переданы некорректные данные при добавлении лайка карточке',
       });
-      res
-        .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: 'Failed to like card' });
-  }
-};
+    }
+      res.status(ERROR_CODE_SERVER_PROBLEM.json({ message: 'Failed to like card' })  
+      }
+  };
 
 // DELETE /cards/:cardId/likes — убрать лайк с карточки
-
 module.exports.dislikeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
-
-  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
-  //   return res
-  //     .status(ERROR_CODE)
-  //     .json({ error: 'Invalid card ID', message: 'Wrong like id' });
-  // }
 
   try {
     const card = await Card.findByIdAndUpdate(
