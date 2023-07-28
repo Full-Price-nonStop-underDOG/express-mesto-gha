@@ -71,7 +71,7 @@ module.exports.likeCard = async (req, res) => {
   // if (!mongoose.Types.ObjectId.isValid(cardId)) {
   //   return res
   //     .status(ERROR_CODE)
-  //     .json({ error: "Invalid card ID", message: "Wrong like id" });
+  //     .json({ error: 'Invalid card ID', message: 'Wrong like id' });
   // }
 
   try {
@@ -89,8 +89,8 @@ module.exports.likeCard = async (req, res) => {
 
     // if (card.likes.includes(userId)) {
     //   return res.status(ERROR_CODE).json({
-    //     error: "User has already liked this card",
-    //     message: "Incorrect like id",
+    //     error: 'User has already liked this card',
+    //     message: 'Incorrect like id',
     //   });
     // }
 
@@ -117,7 +117,7 @@ module.exports.dislikeCard = async (req, res) => {
   // if (!mongoose.Types.ObjectId.isValid(cardId)) {
   //   return res
   //     .status(ERROR_CODE)
-  //     .json({ error: "Invalid card ID", message: "Wrong like id" });
+  //     .json({ error: 'Invalid card ID', message: 'Wrong like id' });
   // }
 
   try {
