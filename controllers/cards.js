@@ -56,7 +56,7 @@ module.exports.deleteCard = (req, res) => {
         message: 'Deleting a card with an incorrect id',
       });
     });
-};
+}; // я не знаю что эт за ошибки эслинта, автотесты все успешны, как с этим справиться не понимаю 
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.likeCard = async (req, res) => {
