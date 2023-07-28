@@ -25,13 +25,14 @@ module.exports.createCard = (req, res) => {
   const { _id } = req.user;
 
   Card.create({ name, link, owner: _id })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(201).json(card))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         return res.status(ERROR_CODE).json({
           message: 'Переданы некорректные данные при создании карточки',
         });
-      } res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to create card' });
+      }
+      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to create card' });
     });
 };
 
@@ -46,19 +47,18 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(cardId)
     .then((deletedCard) => {
       if (deletedCard) {
-        res.json(deletedCard);
-      } else {
-        res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
+        return res.json(deletedCard);
       }
+      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
     })
     .catch(() => {
-      res.status(ERROR_CODE_SERVER_PROBLEM).json({
+      return res.status(ERROR_CODE_SERVER_PROBLEM).json({
         message: 'Deleting a card with an incorrect id',
       });
     });
 };
-// PUT /cards/:cardId/likes — поставить лайк карточке
 
+// PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.likeCard = async (req, res) => {
   const { cardId } = req.params;
   const userId = req.user._id;
@@ -73,7 +73,7 @@ module.exports.likeCard = async (req, res) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: userId } },
-      { new: true }
+      { new: true },
     );
 
     if (!card) {
@@ -89,16 +89,16 @@ module.exports.likeCard = async (req, res) => {
     //   });
     // }
 
-    res.status(200).json(card);
+    return res.status(200).json(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({
         message: 'Переданы некорректные данные при добавлении лайка карточке',
       });
     }
-      res.status(ERROR_CODE_SERVER_PROBLEM.json({ message: 'Failed to like card' })  
-      }
-  };
+    return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to like card' });
+  }
+};
 
 // DELETE /cards/:cardId/likes — убрать лайк с карточки
 module.exports.dislikeCard = async (req, res) => {
@@ -109,7 +109,7 @@ module.exports.dislikeCard = async (req, res) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId } },
-      { new: true }
+      { new: true },
     );
 
     if (!card) {
@@ -123,16 +123,13 @@ module.exports.dislikeCard = async (req, res) => {
     card.likes.splice(index, 1);
     await card.save();
 
-    res.status(200).json(card);
+    return res.status(200).json(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({
         message: 'Переданы некорректные данные при удалении лайка карточки',
       });
-    } else {
-      res
-        .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: 'Failed to dislike card' });
     }
+    return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to dislike card' });
   }
 };
