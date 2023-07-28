@@ -1,7 +1,6 @@
-const express = require("express");
-const Card = require("../models/card");
+const mongoose = require('mongoose');
 
-const mongoose = require("mongoose");
+const Card = require('../models/card');
 
 const ERROR_CODE = 400;
 const ERROR_CODE_NOT_FOUND = 404;
@@ -13,10 +12,10 @@ module.exports.getAllCards = (req, res) => {
     .then((cards) => {
       res.json(cards);
     })
-    .catch((error) => {
+    .catch(() => {
       res
         .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: "Failed to fetch cards" });
+        .json({ message: 'Failed to fetch cards' });
     });
 };
 
@@ -28,15 +27,11 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((error) => {
-      if (error.name === "ValidationError") {
+      if (error.name === 'ValidationError') {
         return res.status(ERROR_CODE).json({
-          message: "Переданы некорректные данные при создании карточки",
+          message: 'Переданы некорректные данные при создании карточки',
         });
-      } else {
-        res
-          .status(ERROR_CODE_SERVER_PROBLEM)
-          .json({ message: "Failed to create card" });
-      }
+      } res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to create card' });
     });
 };
 
@@ -45,7 +40,7 @@ module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res.status(ERROR_CODE).json({ message: "Wrong card id" });
+    return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
   }
 
   Card.findByIdAndDelete(cardId)
@@ -53,12 +48,12 @@ module.exports.deleteCard = (req, res) => {
       if (deletedCard) {
         res.json(deletedCard);
       } else {
-        res.status(ERROR_CODE_NOT_FOUND).json({ message: "Wrong card id" });
+        res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
       }
     })
-    .catch((error) => {
+    .catch(() => {
       res.status(ERROR_CODE_SERVER_PROBLEM).json({
-        message: "Deleting a card with an incorrect id",
+        message: 'Deleting a card with an incorrect id',
       });
     });
 };
@@ -84,7 +79,7 @@ module.exports.likeCard = async (req, res) => {
     if (!card) {
       return res
         .status(ERROR_CODE_NOT_FOUND)
-        .json({ message: "Wrong like id" });
+        .json({ message: 'Wrong like id' });
     }
 
     // if (card.likes.includes(userId)) {
@@ -96,15 +91,13 @@ module.exports.likeCard = async (req, res) => {
 
     res.status(200).json(card);
   } catch (error) {
-    if (error.name === "ValidationError" || error.name === "CastError") {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({
-        message: "Переданы некорректные данные при добавлении лайка карточке",
+        message: 'Переданы некорректные данные при добавлении лайка карточке',
       });
-    } else {
       res
         .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: "Failed to like card" });
-    }
+        .json({ message: 'Failed to like card' });
   }
 };
 
@@ -130,7 +123,7 @@ module.exports.dislikeCard = async (req, res) => {
     if (!card) {
       return res
         .status(ERROR_CODE_NOT_FOUND)
-        .json({ message: "Wrong like id" });
+        .json({ message: 'Wrong like id' });
     }
 
     const index = card.likes.indexOf(userId);
@@ -140,14 +133,14 @@ module.exports.dislikeCard = async (req, res) => {
 
     res.status(200).json(card);
   } catch (error) {
-    if (error.name === "ValidationError" || error.name === "CastError") {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({
-        message: "Переданы некорректные данные при удалении лайка карточки",
+        message: 'Переданы некорректные данные при удалении лайка карточки',
       });
     } else {
       res
         .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: "Failed to dislike card" });
+        .json({ message: 'Failed to dislike card' });
     }
   }
 };

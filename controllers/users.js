@@ -1,5 +1,5 @@
-const User = require("../models/user");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const User = require('../models/user');
 
 const ERROR_CODE = 400;
 const ERROR_CODE_NOT_FOUND = 404;
@@ -13,7 +13,7 @@ module.exports.getUsers = async (req, res) => {
   } catch (error) {
     res
       .status(ERROR_CODE_SERVER_PROBLEM)
-      .json({ message: "Failed to fetch users" });
+      .json({ message: 'Failed to fetch users' });
   }
 };
 
@@ -22,7 +22,7 @@ module.exports.getById = async (req, res) => {
   const { userId } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
+      return res.status(ERROR_CODE).json({ message: 'Invalid user ID' });
     }
 
     const user = await User.findById(userId);
@@ -30,10 +30,10 @@ module.exports.getById = async (req, res) => {
     if (user) {
       res.json(user);
     } else {
-      res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
+      res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
     }
   } catch (error) {
-    res.status(ERROR_CODE_NOT_FOUND).json({ message: "Failed to fetch user" });
+    res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Failed to fetch user' });
   }
 };
 
@@ -44,46 +44,36 @@ module.exports.createUser = async (req, res) => {
   try {
     const newUser = await User.create({ name, about, avatar });
 
-    console.log(newUser);
     res.status(201).json({ newUser });
   } catch (error) {
-    if (error.name === "ValidationError" || error.name === "CastError") {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({ message: error.message });
     }
-    console.log(error);
     res
       .status(ERROR_CODE_SERVER_PROBLEM)
-      .json({ message: "Failed to create user" });
+      .json({ message: 'Failed to create user' });
   }
 };
 
 // PATCH /users/me — обновляет профиль
-module.exports.updateProfile = (req, res, next) => {
+module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  console.log(userId);
-  User.findByIdAndUpdate(
-    userId,
-    { name, about },
-    { new: true, runValidators: true }
-  )
+
+  return User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (updatedUser) {
         return res.json(updatedUser);
-      } else {
-        res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
+      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
     })
     .catch((error) => {
-      if (error.name === "ValidationError" || error.name === "CastError") {
+      if (error.name === 'ValidationError' || error.name === 'CastError') {
         return res.status(ERROR_CODE).json({
-          message: "Переданы некорректные данные при обновлении профиля",
+          message: 'Переданы некорректные данные при обновлении профиля',
         });
-      } else {
-        res
-          .status(ERROR_CODE_SERVER_PROBLEM)
-          .json({ message: "Failed to update profile" });
       }
+      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to update profile' });
     });
 };
 
@@ -92,23 +82,19 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
-  User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
+  return User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (updatedUser) {
         return res.json(updatedUser);
-      } else {
-        res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
       }
+      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
     })
     .catch((error) => {
-      if (error.name === "ValidationError" || error.name === "CastError") {
+      if (error.name === 'ValidationError' || error.name === 'CastError') {
         return res.status(ERROR_CODE).json({
-          message: "Переданы некорректные данные при обновлении профиля",
+          message: 'Переданы некорректные данные при обновлении профиля',
         });
-      } else {
-        res
-          .status(ERROR_CODE_SERVER_PROBLEM)
-          .json({ message: "Failed to update avatar" });
       }
+      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to update avatar' });
     });
 };
