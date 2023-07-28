@@ -47,11 +47,11 @@ module.exports.deleteCard = (req, res) => {
       if (deletedCard) {
         return res.json(deletedCard);
       }
-      return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
+      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        return res.status(ERROR_CODE_NOT_FOUND).json({
+        return res.status(ERROR_CODE).json({
           message: 'Wrong card id',
         });
       }
