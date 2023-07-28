@@ -21,9 +21,9 @@ module.exports.getUsers = async (req, res) => {
 module.exports.getById = async (req, res) => {
   const { userId } = req.params;
   try {
-    // if (!mongoose.Types.ObjectId.isValid(userId)) {
-    //   return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
-    // }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(ERROR_CODE).json({ message: "Invalid user ID" });
+    }
 
     const user = await User.findById(userId);
 
@@ -33,7 +33,7 @@ module.exports.getById = async (req, res) => {
       res.status(ERROR_CODE_NOT_FOUND).json({ message: "User not found" });
     }
   } catch (error) {
-    res.status(ERROR_CODE).json({ message: "Failed to fetch user" });
+    res.status(ERROR_CODE_NOT_FOUND).json({ message: "Failed to fetch user" });
   }
 };
 
@@ -42,49 +42,7 @@ module.exports.createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
 
   try {
-    // if (!name || name.length === 0) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: "Name is required and should not be empty",
-    //     message: "wфыфы",
-    //   });
-    // }
-
-    // if (name.length < 2 || name.length > 30) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: "Name should be between 2 and 30 characters long",
-    //     message: "Fвмцвм",
-    //   });
-    // }
-
-    // Add the validation for the "about" field
-    // if (!about || about.length === 0) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: "About is required and should not be empty",
-    //     message: "wымц",
-    //   });
-    // }
-
-    // if (about.length < 2 || about.length > 30) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: "About should be between 2 and 30 characters long",
-    //     message: "Fцкмци",
-    //   });
-    // }
-
-    // if (!avatar || avatar.length === 0) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: "Avatar is required and should not be empty",
-    //     message: "wцмц",
-    //   });
-    // }
-
     const newUser = await User.create({ name, about, avatar });
-
-    // if (!newUser._id) {
-    //   return res
-    //     .status(ERROR_CODE_SERVER_PROBLEM)
-    //     .json({ error: "Failed to create user" });
-    // }
 
     console.log(newUser);
     res.status(201).json({ newUser });
@@ -95,7 +53,7 @@ module.exports.createUser = async (req, res) => {
     console.log(error);
     res
       .status(ERROR_CODE_SERVER_PROBLEM)
-      .json({ error: "Failed to create user" });
+      .json({ message: "Failed to create user" });
   }
 };
 
