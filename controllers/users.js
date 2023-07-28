@@ -29,9 +29,12 @@ module.exports.getById = async (req, res) => {
 
     if (user) {
       return res.json(user);
-    } return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
+    }
+    return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
   } catch (error) {
-    return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Failed to fetch user' });
+    return res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ message: 'Failed to fetch user' });
   }
 };
 
@@ -46,7 +49,8 @@ module.exports.createUser = async (req, res) => {
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return res.status(ERROR_CODE).json({ message: error.message });
-    } return res
+    }
+    return res
       .status(ERROR_CODE_SERVER_PROBLEM)
       .json({ message: 'Failed to create user' });
   }
@@ -57,12 +61,18 @@ module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
+  return User.findByIdAndUpdate(
+    userId,
+    { name, about },
+    { new: true, runValidators: true }
+  )
     .then((updatedUser) => {
       if (updatedUser) {
         return res.json(updatedUser);
       }
-      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
+      return res
+        .status(ERROR_CODE_NOT_FOUND)
+        .json({ message: 'User not found' });
     })
     .catch((error) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -70,7 +80,9 @@ module.exports.updateProfile = (req, res) => {
           message: 'Переданы некорректные данные при обновлении профиля',
         });
       }
-      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to update profile' });
+      return res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ message: 'Failed to update profile' });
     });
 };
 
@@ -79,12 +91,18 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
-  return User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
+  return User.findByIdAndUpdate(
+    userId,
+    { avatar },
+    { new: true, runValidators: true }
+  )
     .then((updatedUser) => {
       if (updatedUser) {
         return res.json(updatedUser);
       }
-      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'User not found' });
+      return res
+        .status(ERROR_CODE_NOT_FOUND)
+        .json({ message: 'User not found' });
     })
     .catch((error) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -92,6 +110,8 @@ module.exports.updateAvatar = (req, res) => {
           message: 'Переданы некорректные данные при обновлении профиля',
         });
       }
-      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to update avatar' });
+      return res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ message: 'Failed to update avatar' });
     });
 };

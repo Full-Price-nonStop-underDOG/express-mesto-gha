@@ -30,7 +30,9 @@ module.exports.createCard = (req, res) => {
           message: 'Переданы некорректные данные при создании карточки',
         });
       }
-      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to create card' });
+      return res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ message: 'Failed to create card' });
     });
 };
 
@@ -47,7 +49,9 @@ module.exports.deleteCard = (req, res) => {
       if (deletedCard) {
         return res.json(deletedCard);
       }
-      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
+      return res
+        .status(ERROR_CODE_NOT_FOUND)
+        .json({ message: 'Wrong card id' });
     })
     .catch((error) => {
       if (error.name === 'CastError') {
@@ -55,7 +59,9 @@ module.exports.deleteCard = (req, res) => {
           message: 'Wrong card id',
         });
       }
-      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'problems with id' });
+      return res
+        .status(ERROR_CODE_SERVER_PROBLEM)
+        .json({ message: 'problems with id' });
     });
 };
 
@@ -97,7 +103,9 @@ module.exports.likeCard = async (req, res) => {
         message: 'Переданы некорректные данные при добавлении лайка карточке',
       });
     }
-    return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to like card' });
+    return res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ message: 'Failed to like card' });
   }
 };
 
@@ -119,11 +127,6 @@ module.exports.dislikeCard = async (req, res) => {
         .json({ message: 'Wrong like id' });
     }
 
-    const index = card.likes.indexOf(userId);
-
-    card.likes.splice(index, 1);
-    await card.save();
-
     return res.status(200).json(card);
   } catch (error) {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -131,6 +134,8 @@ module.exports.dislikeCard = async (req, res) => {
         message: 'Переданы некорректные данные при удалении лайка карточки',
       });
     }
-    return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'Failed to dislike card' });
+    return res
+      .status(ERROR_CODE_SERVER_PROBLEM)
+      .json({ message: 'Failed to dislike card' });
   }
 };
