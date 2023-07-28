@@ -49,9 +49,14 @@ module.exports.deleteCard = (req, res) => {
       }
       return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
     })
-    .catch(() => res.status(ERROR_CODE_SERVER_PROBLEM).json({
-      message: 'Deleting a card with an incorrect id',
-    }));
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        return res.status(ERROR_CODE).json({
+          message: 'Wrong card id',
+        });
+      }
+      return res.status(ERROR_CODE_SERVER_PROBLEM).json({ message: 'problems with id' });
+    });
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
