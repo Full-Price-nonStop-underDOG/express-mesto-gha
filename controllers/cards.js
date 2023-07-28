@@ -1,3 +1,4 @@
+
 const Card = require('../models/card');
 
 const ERROR_CODE = 400;
@@ -47,7 +48,7 @@ module.exports.deleteCard = (req, res) => {
       if (deletedCard) {
         return res.json(deletedCard);
       }
-      return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
+      return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
     })
     .catch(() => res.status(ERROR_CODE_SERVER_PROBLEM).json({
       message: 'Deleting a card with an incorrect id',
