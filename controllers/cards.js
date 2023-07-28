@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const Card = require('../models/card');
 
 const ERROR_CODE = 400;
@@ -40,9 +38,9 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
+  //   return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
+  // }
 
   Card.findByIdAndDelete(cardId)
     .then((deletedCard) => {
@@ -51,12 +49,10 @@ module.exports.deleteCard = (req, res) => {
       }
       return res.status(ERROR_CODE_NOT_FOUND).json({ message: 'Wrong card id' });
     })
-    .catch(() => {
-      return res.status(ERROR_CODE_SERVER_PROBLEM).json({
-        message: 'Deleting a card with an incorrect id',
-      });
-    });
-}; // я не знаю что эт за ошибки эслинта, автотесты все успешны, как с этим справиться не понимаю 
+    .catch(() => res.status(ERROR_CODE_SERVER_PROBLEM).json({
+      message: 'Deleting a card with an incorrect id',
+    }));
+};
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.likeCard = async (req, res) => {
