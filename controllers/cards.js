@@ -37,32 +37,33 @@ module.exports.createCard = (req, res) => {
 };
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = async (req, res) => {
   const { cardId } = req.params;
+  const userId = req.user._id; // Get the ID of the current user
 
-  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
-  //   return res.status(ERROR_CODE).json({ message: 'Wrong card id' });
-  // }
+  try {
+    const card = await Card.findById(cardId);
 
-  Card.findByIdAndDelete(cardId)
-    .then((deletedCard) => {
-      if (deletedCard) {
-        return res.json(deletedCard);
-      }
+    if (!card) {
+      return res.status(404).json({ message: 'Card not found' });
+    }
+
+    if (String(card.owner) !== String(userId)) {
+      // Check if the requesting user is the owner of the card
       return res
-        .status(ERROR_CODE_NOT_FOUND)
-        .json({ message: 'Wrong card id' });
-    })
-    .catch((error) => {
-      if (error.name === 'CastError') {
-        return res.status(ERROR_CODE).json({
-          message: 'Wrong card id',
-        });
-      }
-      return res
-        .status(ERROR_CODE_SERVER_PROBLEM)
-        .json({ message: 'problems with id' });
-    });
+        .status(403)
+        .json({ message: 'You do not have permission to delete this card' });
+    }
+
+    await Card.findByIdAndDelete(cardId);
+
+    return res.json({ message: 'Card deleted successfully' });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({ message: 'Wrong card id' });
+    }
+    return res.status(500).json({ message: 'Failed to delete card' });
+  }
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
@@ -80,7 +81,7 @@ module.exports.likeCard = async (req, res) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: userId } },
-      { new: true },
+      { new: true }
     );
 
     if (!card) {
@@ -118,7 +119,7 @@ module.exports.dislikeCard = async (req, res) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId } },
-      { new: true },
+      { new: true }
     );
 
     if (!card) {
