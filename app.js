@@ -19,7 +19,7 @@ app.use(
     origin: 'http://localhost:3001',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -51,6 +51,10 @@ app.use((req, res, next) => {
 app.use(router);
 app.use(routerCards);
 
-app.use((req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+
+  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
+  res.status(statusCode).send({ message });
+  next();
 });
