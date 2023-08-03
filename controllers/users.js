@@ -46,6 +46,7 @@ module.exports.getUsers = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+  return res.json();
 };
 
 // GET /users/:userId - возвращает пользователя по _id
@@ -89,9 +90,7 @@ module.exports.createUser = async (req, res, next) => {
   if (err) {
     return next(new InvalidRequst(err.message));
   }
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -110,7 +109,7 @@ module.exports.createUser = async (req, res, next) => {
     }
     if (error.code === 11000) {
       return next(
-        new ServerConflictError('Пользователь с таким email уже существует'),
+        new ServerConflictError('Пользователь с таким email уже существует')
       );
     }
     return next(error);
@@ -129,7 +128,7 @@ module.exports.updateProfile = (req, res, next) => {
   return User.findByIdAndUpdate(
     userId,
     { name, about },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (updatedUser) {
@@ -141,8 +140,8 @@ module.exports.updateProfile = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);
@@ -161,7 +160,7 @@ module.exports.updateAvatar = (req, res, next) => {
   return User.findByIdAndUpdate(
     userId,
     { avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (updatedUser) {
@@ -173,8 +172,8 @@ module.exports.updateAvatar = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);

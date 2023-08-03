@@ -29,12 +29,13 @@ module.exports.createCard = (req, res, next) => {
       if (error.name === 'ValidationError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при создании карточки',
-          ),
+            'Переданы некорректные данные при создании карточки'
+          )
         );
       }
       return next(error);
     });
+  return res.json();
 };
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
@@ -82,7 +83,7 @@ module.exports.likeCard = async (req, res, next) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: userId } },
-      { new: true },
+      { new: true }
     );
 
     if (!card) {
@@ -101,8 +102,8 @@ module.exports.likeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке',
-        ),
+          'Переданы некорректные данные при добавлении лайка карточке'
+        )
       );
     }
     return next(error);
@@ -118,7 +119,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId } },
-      { new: true },
+      { new: true }
     );
 
     if (!card) {
@@ -130,8 +131,8 @@ module.exports.dislikeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке',
-        ),
+          'Переданы некорректные данные при добавлении лайка карточке'
+        )
       );
     }
     return next(error);
