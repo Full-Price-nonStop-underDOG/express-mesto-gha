@@ -11,9 +11,6 @@ const authMiddleware = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
 
-app.post('/signin', login);
-app.post('/signup', createUser);
-
 app.use(
   cors({
     origin: 'http://localhost:3001',
@@ -50,6 +47,8 @@ app.use((req, res, next) => {
 
 app.use(router);
 app.use(routerCards);
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

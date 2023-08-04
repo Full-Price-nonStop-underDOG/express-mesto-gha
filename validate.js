@@ -3,9 +3,9 @@ const Joi = require('joi');
 const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 // Схема валидации для создания пользователя
 const createUserSchema = Joi.object({
-  // name: Joi.string().min(2).max(30).required(),
-  // about: Joi.string().min(2).max(30).required(),
-  // avatar: Joi.string().required(),
+  name: Joi.string().min(2).max(30).required(),
+  about: Joi.string().min(2).max(30).required(),
+  avatar: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });

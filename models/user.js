@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    required: true,
     default:
       'https://www.google.com/url?sa=i&url=https%3A%2F%2Fstoryport.online%2Fpoznakomitsya-s-avtorom%2Fvelikaya-skazochnitsa-za-chto-my-lyubim-ursulu-le-guin%2F&psig=AOvVaw25eYgaS3D6yhZgKP6GG1Gq&ust=1690917082219000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOD2hpLTuYADFQAAAAAdAAAAABAE',
   },

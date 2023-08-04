@@ -90,6 +90,7 @@ module.exports.createUser = async (req, res, next) => {
   if (err) {
     return next(new InvalidRequst(err.message));
   }
+  console.log(req.body);
   const {
     name, about, avatar, email, password,
   } = req.body;
