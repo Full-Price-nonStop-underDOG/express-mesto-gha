@@ -86,16 +86,17 @@ module.exports.getCurrentUser = async (req, res, next) => {
 
 // POST /users - создаёт пользователя
 module.exports.createUser = async (req, res, next) => {
-  const { err } = createUserSchema.validate(req.body);
-  if (err) {
-    return next(new InvalidRequst(err.message));
-  }
-  console.log(req.body);
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
-
   try {
+    // Проверяем, что данные из req.body соответствуют схеме createUserSchema
+    const validationResult = createUserSchema.validate(req.body);
+    if (validationResult.error) {
+      // Если есть ошибки валидации, возвращаем ошибку 400 с сообщением об ошибке
+      return next(new InvalidRequst(validationResult.error.message));
+    }
+
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       name,
