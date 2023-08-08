@@ -93,7 +93,7 @@ module.exports.createUser = async (req, res, next) => {
     const validationResult = createUserSchema.validate(req.body);
     if (validationResult.error) {
       // Если есть ошибки валидации, передаем объект ошибок целиком
-      return next(new InvalidRequst(validationResult.error.details));
+      return next(new InvalidRequst(validationResult.error));
     }
 
     const {
