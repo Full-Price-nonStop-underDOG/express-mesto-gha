@@ -138,15 +138,12 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         next(
           new ServerConflictError(
-            'Пользователь с таким электронным адресом уже зарегистрирован',
+            'Пользователь с таким электронным адресом уже существует',
           ),
         );
       } else if (err.name === 'ValidationError') {
-        next(
-          new InvalidRequst(
-            'Переданы некорректные данные при регистрации пользователя',
-          ),
-        );
+        // В случае ошибки валидации отправляем ошибку 400
+        next(new InvalidRequst('Переданы некорректные данные при регистрации'));
       } else {
         next(err);
       }
