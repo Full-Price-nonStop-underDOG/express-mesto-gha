@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { celebrate, Joi } = require('celebrate');
 
 const app = express();
 
@@ -10,6 +11,8 @@ const routerCards = require('./routes/cards');
 const authMiddleware = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
+
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 app.use(
   cors({
@@ -48,7 +51,19 @@ app.use((req, res, next) => {
 app.use(router);
 app.use(routerCards);
 app.post('/signin', login);
-app.post('/signup', createUser);
+router.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(6),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(urlRegex),
+    }),
+  }),
+  createUser,
+);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

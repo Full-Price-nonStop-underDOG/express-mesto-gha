@@ -8,11 +8,7 @@ const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
-const {
-  createUserSchema,
-  updateProfileSchema,
-  updateAvatarSchema,
-} = require('../validate');
+const { updateProfileSchema, updateAvatarSchema } = require('../validate');
 
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -89,13 +85,6 @@ module.exports.getCurrentUser = async (req, res, next) => {
 // POST /users - создаёт пользователя
 module.exports.createUser = async (req, res, next) => {
   try {
-    // Проверяем, что данные из req.body соответствуют схеме createUserSchema
-    const validationResult = createUserSchema.validate(req.body);
-    if (validationResult.error) {
-      // Если есть ошибки валидации, передаем объект ошибок целиком
-      return next(new InvalidRequst(validationResult.error));
-    }
-
     const {
       name, about, avatar, email, password,
     } = req.body;
