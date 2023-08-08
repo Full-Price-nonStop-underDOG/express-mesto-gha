@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+
 const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
@@ -90,8 +92,8 @@ module.exports.createUser = async (req, res, next) => {
     // Проверяем, что данные из req.body соответствуют схеме createUserSchema
     const validationResult = createUserSchema.validate(req.body);
     if (validationResult.error) {
-      // Если есть ошибки валидации, возвращаем ошибку 400 с сообщением об ошибке
-      return next(new InvalidRequst(validationResult.error.message));
+      // Если есть ошибки валидации, передаем объект ошибок целиком
+      return next(new InvalidRequst(validationResult.error.details));
     }
 
     const {
