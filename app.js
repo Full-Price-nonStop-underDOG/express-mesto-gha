@@ -66,13 +66,14 @@ router.post(
 );
 
 app.use((err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || 500;
   if (err.details) {
     // Если есть details, это означает ошибку валидации
-    statusCode = 400;
+    return res.status(400).json({ error: err.details });
   }
 
-  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err;
+  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
   res.status(statusCode).send(message);
   next();
+  return err;
 });
