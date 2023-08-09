@@ -72,7 +72,7 @@ app.use((err, req, res, next) => {
     statusCode = 400;
   }
 
-  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
-  res.status(statusCode).send({ message });
+  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err;
+  res.status(statusCode).send(message);
   next();
 });
