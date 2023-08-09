@@ -8,7 +8,6 @@ const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
-const { updateProfileSchema, updateAvatarSchema } = require('../validate');
 
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -152,10 +151,6 @@ module.exports.createUser = (req, res, next) => {
 
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res, next) => {
-  const { err } = updateProfileSchema.validate(req.body);
-  if (err) {
-    return next(new InvalidRequst(err.message));
-  }
   const { name, about } = req.body;
   const userId = req.user._id;
 
@@ -184,10 +179,6 @@ module.exports.updateProfile = (req, res, next) => {
 
 // PATCH /users/me/avatar — обновляет аватар
 module.exports.updateAvatar = (req, res, next) => {
-  const { err } = updateAvatarSchema.validate(req.body);
-  if (err) {
-    return next(new InvalidRequst(err.message));
-  }
   const { avatar } = req.body;
   const userId = req.user._id;
 

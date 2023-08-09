@@ -6,18 +6,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Урсула Ле Гуин',
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Писатель',
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
     default:
-      'https://www.google.com/url?sa=i&url=https%3A%2F%2Fstoryport.online%2Fpoznakomitsya-s-avtorom%2Fvelikaya-skazochnitsa-za-chto-my-lyubim-ursulu-le-guin%2F&psig=AOvVaw25eYgaS3D6yhZgKP6GG1Gq&ust=1690917082219000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOD2hpLTuYADFQAAAAAdAAAAABAE',
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
