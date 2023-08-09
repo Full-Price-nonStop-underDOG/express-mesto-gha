@@ -44,7 +44,7 @@ module.exports.getUsers = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-  return res.json();
+  return res.status(200).json();
 };
 
 // GET /users/:userId - возвращает пользователя по _id
@@ -76,7 +76,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
     }
 
     // Return the user information in the response
-    return res.status(201).json(currentUser);
+    return res.status(200).json(currentUser);
   } catch (error) {
     return next(error);
   }

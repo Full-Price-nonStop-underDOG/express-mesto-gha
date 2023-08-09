@@ -8,7 +8,7 @@ const app = express();
 
 const router = require('./routes/users');
 const routerCards = require('./routes/cards');
-const authMiddleware = require('./middlewares/auth');
+// const authMiddleware = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
 
@@ -40,13 +40,13 @@ app.listen(3000, () => {});
 //   next();
 // });
 
-app.use((req, res, next) => {
-  if (req.url === '/signup' || req.url === '/signin') {
-    next(); // Skip auth for signup and signin
-  } else {
-    authMiddleware(req, res, next); // Apply authMiddleware for other routes
-  }
-});
+// app.use((req, res, next) => {
+//   if (req.url === '/signup' || req.url === '/signin') {
+//     next(); // Skip auth for signup and signin
+//   } else {
+//     authMiddleware(req, res, next); // Apply authMiddleware for other routes
+//   }
+// });
 
 app.use(router);
 app.use(routerCards);

@@ -1,5 +1,5 @@
 const express = require('express');
-const authMiddleware = require('../middlewares/auth');
+// const authMiddleware = require('../middlewares/auth');
 
 const router = express.Router();
 const {
@@ -10,7 +10,7 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
-router.get('/users/me', authMiddleware, getCurrentUser);
+router.get('/users/me', getCurrentUser);
 // GET /users - возвращает всех пользователей
 router.get('/users', getUsers);
 
