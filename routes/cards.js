@@ -1,4 +1,7 @@
 const express = require('express');
+const { celebrate, Joi } = require('celebrate');
+
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 const router = express.Router();
 
@@ -15,7 +18,16 @@ const {
 router.get('/cards', getAllCards);
 
 // POST /cards — создаёт карточку
-router.post('/cards', createCard);
+router.post(
+  '/cards',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().required().pattern(urlRegex),
+    }),
+  }),
+  createCard,
+);
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 router.delete('/cards/:cardId', deleteCard);
