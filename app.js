@@ -50,7 +50,18 @@ app.use((req, res, next) => {
 
 app.use(router);
 app.use(routerCards);
-app.post('/signin', login);
+
+router.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(6),
+    }),
+  }),
+  login,
+);
+
 router.post(
   '/signup',
   celebrate({
