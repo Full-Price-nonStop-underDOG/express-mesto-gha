@@ -51,13 +51,13 @@ module.exports.getById = async (req, res, next) => {
   const { userId } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return next(new InvalidRequst('Invalid user ID'));
+      return next(new NoDataError('Invalid user ID'));
     }
 
     const user = await User.findById(userId);
 
     if (user) {
-      return res.json(user);
+      return res.status(200).json(user);
     }
     return next(new NoDataError('User not found'));
   } catch (error) {
@@ -69,7 +69,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
   try {
     // Fetch the current user information from req.user (provided by the auth middleware)
     const currentUser = await User.findById(req.user._id);
-
+    console.log(currentUser);
     if (!currentUser) {
       return next(new NoDataError('User not found'));
     }
