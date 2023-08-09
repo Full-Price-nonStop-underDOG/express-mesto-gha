@@ -76,7 +76,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
     }
 
     // Return the user information in the response
-    return res.json(currentUser);
+    return res.status(201).json(currentUser);
   } catch (error) {
     return next(error);
   }
