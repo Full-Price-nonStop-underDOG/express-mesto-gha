@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const app = express();
 
@@ -65,15 +65,15 @@ router.post(
   createUser,
 );
 
+app.use(errors());
 app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
+  let statusCode = err.statusCode || 500;
   if (err.details) {
     // Если есть details, это означает ошибку валидации
-    return res.status(400).json({ error: err.details });
+    statusCode = 400;
   }
 
-  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
+  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.Joi;
   res.status(statusCode).send(message);
   next();
-  return err;
 });
