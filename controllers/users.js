@@ -55,7 +55,7 @@ module.exports.getById = async (req, res, next) => {
     if (user) {
       return res.status(200).json(user);
     }
-    return next(new NoDataError('User not found'));
+    return user;
   } catch (error) {
     return next(error);
   }
