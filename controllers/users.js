@@ -47,10 +47,10 @@ module.exports.getUsers = async (req, res, next) => {
 
 // GET /users/:userId - возвращает пользователя по _id
 module.exports.getById = async (req, res, next) => {
-  const { userId } = req.params;
-
+  const { id } = req.params.id;
+  console.log(id);
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
 
     if (user) {
       return res.status(200).json(user);
@@ -58,7 +58,7 @@ module.exports.getById = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-  return userId;
+  return id;
 };
 
 module.exports.getCurrentUser = async (req, res, next) => {

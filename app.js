@@ -81,7 +81,6 @@ router.post(
 
 app.use(errors());
 app.use((err, req, res, next) => {
-  console.log(err);
   let statusCode = err.statusCode || 500;
   if (err.details) {
     // Если есть details, это означает ошибку валидации
