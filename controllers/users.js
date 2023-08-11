@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
@@ -51,10 +50,6 @@ module.exports.getById = async (req, res, next) => {
   const { token } = req.cookies;
   const payload = jwt.decode(token);
   try {
-    if (!mongoose.Types.ObjectId.isValid(payload)) {
-      return next(new InvalidRequst('Invalid user ID'));
-    }
-
     const user = await User.findById(payload);
 
     if (user) {
