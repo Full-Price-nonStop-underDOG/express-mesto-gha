@@ -47,15 +47,14 @@ module.exports.getUsers = async (req, res, next) => {
 
 // GET /users/:userId - возвращает пользователя по _id
 module.exports.getById = async (req, res, next) => {
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
+  const { userId } = req.params;
+
   try {
-    const user = await User.findById(payload);
+    const user = await User.findById(userId);
 
     if (user) {
       return res.status(200).json(user);
     }
-    return user;
   } catch (error) {
     return next(error);
   }
@@ -107,19 +106,19 @@ module.exports.getCurrentUser = async (req, res, next) => {
 // };
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    email, password, name, about, avatar,
-  } = req.body;
+  const { email, password, name, about, avatar } = req.body;
 
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({
-      email,
-      password: hash,
-      name,
-      about,
-      avatar,
-    }))
+    .then((hash) =>
+      User.create({
+        email,
+        password: hash,
+        name,
+        about,
+        avatar,
+      })
+    )
     .then((user) => {
       const { _id } = user;
 
@@ -135,8 +134,8 @@ module.exports.createUser = (req, res, next) => {
       if (err.code === 11000) {
         next(
           new ServerConflictError(
-            'Пользователь с таким электронным адресом уже существует',
-          ),
+            'Пользователь с таким электронным адресом уже существует'
+          )
         );
       } else if (err.name === 'ValidationError') {
         // В случае ошибки валидации отправляем ошибку 400
@@ -157,7 +156,7 @@ module.exports.updateProfile = (req, res, next) => {
   User.findByIdAndUpdate(
     payload,
     { name, about },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (!updatedUser) {
@@ -169,8 +168,8 @@ module.exports.updateProfile = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);
@@ -186,7 +185,7 @@ module.exports.updateAvatar = (req, res, next) => {
   return User.findByIdAndUpdate(
     payload,
     { avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((updatedUser) => {
       if (updatedUser) {
@@ -198,8 +197,8 @@ module.exports.updateAvatar = (req, res, next) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при обновлении профиля',
-          ),
+            'Переданы некорректные данные при обновлении профиля'
+          )
         );
       }
       return next(error);
