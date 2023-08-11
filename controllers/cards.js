@@ -2,7 +2,6 @@ const Card = require('../models/card');
 
 const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
-// const serverConflictError = require('../errors/serverConflictError');
 const createCardSchema = require('../validate');
 
 // GET /cards — возвращает все карточки

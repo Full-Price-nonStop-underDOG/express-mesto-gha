@@ -89,6 +89,6 @@ app.use((err, req, res, next) => {
   }
 
   const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
-  res.status(statusCode).send(message);
+  res.status(statusCode).json(message);
   next();
 });
