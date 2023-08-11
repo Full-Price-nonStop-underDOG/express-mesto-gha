@@ -3,14 +3,17 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 const router = require('./routes/users');
 const routerCards = require('./routes/cards');
-// const authMiddleware = require('./middlewares/auth');
+const authMiddleware = require('./middlewares/auth');
 
 const { login, createUser } = require('./controllers/users');
+
+app.use(cookieParser());
 
 const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
@@ -40,13 +43,13 @@ app.listen(3000, () => {});
 //   next();
 // });
 
-// app.use((req, res, next) => {
-//   if (req.url === '/signup' || req.url === '/signin') {
-//     next(); // Skip auth for signup and signin
-//   } else {
-//     authMiddleware(req, res, next); // Apply authMiddleware for other routes
-//   }
-// });
+app.use((req, res, next) => {
+  if (req.url === '/signup' || req.url === '/signin') {
+    next(); // Skip auth for signup and signin
+  } else {
+    authMiddleware(req, res, next); // Apply authMiddleware for other routes
+  }
+});
 
 app.use(router);
 app.use(routerCards);
@@ -78,6 +81,7 @@ router.post(
 
 app.use(errors());
 app.use((err, req, res, next) => {
+  console.log(err);
   let statusCode = err.statusCode || 500;
   if (err.details) {
     // Если есть details, это означает ошибку валидации

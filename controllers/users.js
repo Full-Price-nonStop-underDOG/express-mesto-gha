@@ -67,8 +67,10 @@ module.exports.getById = async (req, res, next) => {
 
 module.exports.getCurrentUser = async (req, res, next) => {
   try {
+    const { token } = req.cookies;
+    const payload = jwt.decode(token);
     // Fetch the current user information from req.user (provided by the auth middleware)
-    const currentUser = await User.findById(req.user._id);
+    const currentUser = await User.findById(payload);
 
     if (!currentUser) {
       return next(new NoDataError('User not found'));
@@ -152,10 +154,12 @@ module.exports.createUser = (req, res, next) => {
 // PATCH /users/me — обновляет профиль
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
-  const userId = req.user._id;
+
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
 
   User.findByIdAndUpdate(
-    userId,
+    payload,
     { name, about },
     { new: true, runValidators: true },
   )
@@ -180,10 +184,11 @@ module.exports.updateProfile = (req, res, next) => {
 // PATCH /users/me/avatar — обновляет аватар
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const userId = req.user._id;
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
 
   return User.findByIdAndUpdate(
-    userId,
+    payload,
     { avatar },
     { new: true, runValidators: true },
   )
