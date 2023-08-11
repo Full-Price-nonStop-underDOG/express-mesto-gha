@@ -48,13 +48,14 @@ module.exports.getUsers = async (req, res, next) => {
 
 // GET /users/:userId - возвращает пользователя по _id
 module.exports.getById = async (req, res, next) => {
-  const { userId } = req.params;
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
   try {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!mongoose.Types.ObjectId.isValid(payload)) {
       return next(new InvalidRequst('Invalid user ID'));
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(payload);
 
     if (user) {
       return res.status(200).json(user);
