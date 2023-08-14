@@ -48,16 +48,20 @@ module.exports.getUsers = async (req, res, next) => {
 // GET /users/:userId - возвращает пользователя по _id
 module.exports.getById = async (req, res, next) => {
   const { userId } = req.params;
-  try {
-    const user = await User.findById(userId);
+  User.findById(userId)
 
-    if (user) {
-      return res.status(200).json(user);
-    }
-  } catch (error) {
-    return next(error);
-  }
-  return userId;
+    .then((user) => {
+      if (user) return res.send(user);
+
+      throw new NoDataError('Пользователь с таким id не найден');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new InvalidRequst('Передан некорректный id'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.getCurrentUser = async (req, res, next) => {
