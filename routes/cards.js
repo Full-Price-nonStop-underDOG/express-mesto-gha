@@ -1,7 +1,8 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 
-const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex =
+  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 const router = express.Router();
 
@@ -26,15 +27,29 @@ router.post(
       link: Joi.string().required().pattern(urlRegex),
     }),
   }),
-  createCard,
+  createCard
 );
 
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 router.delete('/cards/:cardId', deleteCard);
 
-router.put('/cards/:cardId/likes', likeCard);
+router.put(
+  'cards/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().length(24).hex().required(),
+    }),
+  }),
+  likeCard
+); // - Поставить лайк карточке
 
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
-router.delete('/cards/:cardId/likes', dislikeCard);
-
+router.delete(
+  'cards/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().length(24).hex().required(),
+    }),
+  }),
+  dislikeCard
+); // -
 module.exports = router;
