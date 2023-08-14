@@ -79,7 +79,7 @@ module.exports.likeCard = (req, res, next) => {
     }
   )
     .then((card) => {
-      if (card) return res.send(card);
+      if (card) res.status(200).json(card);
 
       throw new NoDataError('Карточка с указанным id не найдена');
     })
