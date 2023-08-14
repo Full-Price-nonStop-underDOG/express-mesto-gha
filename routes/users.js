@@ -1,7 +1,8 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 
-const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex =
+  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 // const authMiddleware = require('../middlewares/auth');
 
 const router = express.Router();
@@ -19,13 +20,13 @@ router.get('/users', getUsers);
 
 // GET /users/:userId - возвращает пользователя по _id
 router.get(
-  '/users',
+  '/users/:userId',
   celebrate({
     params: Joi.object().keys({
-      id: Joi.string().length(24).hex().required(),
+      userId: Joi.string().length(24).hex().required(),
     }),
   }),
-  getById,
+  getById
 );
 
 // POST /users - создаёт пользователя
@@ -40,7 +41,7 @@ router.patch(
       about: Joi.string().min(2).max(30),
     }),
   }),
-  updateProfile,
+  updateProfile
 );
 
 // PATCH /users/me/avatar — обновляет аватар
@@ -52,7 +53,7 @@ router.patch(
       avatar: Joi.string().pattern(urlRegex),
     }),
   }),
-  updateAvatar,
+  updateAvatar
 );
 
 module.exports = router;
