@@ -1,8 +1,8 @@
+const jwt = require('jsonwebtoken');
 const Card = require('../models/card');
 
 const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
-const createCardSchema = require('../validate');
 
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res, next) => {
@@ -63,37 +63,48 @@ module.exports.deleteCard = async (req, res, next) => {
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
-module.exports.likeCard = (req, res, next) => {
+module.exports.likeCard = async (req, res, next) => {
   const { cardId } = req.params;
-  const { userId } = req.user;
 
-  Card.findByIdAndUpdate(
-    cardId,
-    {
-      $addToSet: {
-        likes: userId,
-      },
-    },
-    {
-      new: true,
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
+  // Fetch the current user information from req.user (provided by the auth middleware)
+  const currentUser = await User.findById(payload);
+  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
+  //   return res
+  //     .status(ERROR_CODE)
+  //     .json({ error: 'Invalid card ID', message: 'Wrong like id' });
+  // }
+
+  try {
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      { $addToSet: { likes: currentUser } },
+      { new: true }
+    );
+
+    if (!card) {
+      return next(new NoDataError('Wrong like id'));
     }
-  )
-    .then((card) => {
-      if (card) res.status(200).json(card);
 
-      throw new NoDataError('Карточка с указанным id не найдена');
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(
-          new InvalidRequst(
-            'Переданы некорректные данные при добавлении лайка карточке'
-          )
-        );
-      } else {
-        next(err);
-      }
-    });
+    // if (card.likes.includes(userId)) {
+    //   return res.status(ERROR_CODE).json({
+    //     error: 'User has already liked this card',
+    //     message: 'Incorrect like id',
+    //   });
+    // }
+
+    return res.status(200).json(card);
+  } catch (error) {
+    if (error.name === 'ValidationError' || error.name === 'CastError') {
+      return next(
+        new InvalidRequst(
+          'Переданы некорректные данные при добавлении лайка карточке'
+        )
+      );
+    }
+    return next(error);
+  }
 };
 
 // DELETE /cards/:cardId/likes — убрать лайк с карточки
