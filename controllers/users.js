@@ -55,7 +55,7 @@ module.exports.getById = async (req, res, next) => {
     .then((user) => {
       if (user) return res.send(user);
 
-      throw new NoDataError('Пользователь с таким id не найден');
+      throw new NoDataError({ message: 'Пользователь с таким id не найден' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
