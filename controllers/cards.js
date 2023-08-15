@@ -24,8 +24,8 @@ module.exports.createCard = (req, res, next) => {
       if (error.name === 'ValidationError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при создании карточки',
-          ),
+            'Переданы некорректные данные при создании карточки'
+          )
         );
       }
       return next(error);
@@ -35,7 +35,7 @@ module.exports.createCard = (req, res, next) => {
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
-  const userId = req.user._id; // Get the ID of the current user
+  const { userId } = req.params; // Get the ID of the current user
 
   try {
     const card = await Card.findById(cardId);
@@ -53,7 +53,7 @@ module.exports.deleteCard = async (req, res, next) => {
 
     await Card.findByIdAndDelete(cardId);
 
-    return res.json({ message: 'Card deleted successfully' });
+    return res.status(200).json({ message: 'Card deleted successfully' });
   } catch (error) {
     if (error.name === 'CastError') {
       return next(new InvalidRequst('Wrong card id'));
@@ -108,7 +108,7 @@ module.exports.likeCard = (req, res, next) => {
     },
     {
       new: true,
-    },
+    }
   )
     .then((card) => {
       if (card) return res.send(card);
@@ -119,8 +119,8 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(
           new InvalidRequst(
-            'Переданы некорректные данные при добавлении лайка карточке',
-          ),
+            'Переданы некорректные данные при добавлении лайка карточке'
+          )
         );
       } else {
         next(err);
@@ -141,7 +141,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: currentUser } },
-      { new: true },
+      { new: true }
     );
 
     if (!card) {
@@ -153,8 +153,8 @@ module.exports.dislikeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке',
-        ),
+          'Переданы некорректные данные при добавлении лайка карточке'
+        )
       );
     }
     return next(error);
