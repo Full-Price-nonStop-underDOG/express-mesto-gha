@@ -24,8 +24,8 @@ module.exports.createCard = (req, res, next) => {
       if (error.name === 'ValidationError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
       }
       return next(error);
@@ -63,60 +63,85 @@ module.exports.deleteCard = async (req, res, next) => {
 };
 
 // PUT /cards/:cardId/likes — поставить лайк карточке
-module.exports.likeCard = async (req, res, next) => {
+// module.exports.likeCard = async (req, res, next) => {
+//   const { cardId } = req.params;
+
+//   const { token } = req.cookies;
+//   const payload = jwt.decode(token);
+//   // Fetch the current user information from req.user (provided by the auth middleware)
+//   const currentUser = await User.findById(payload);
+
+//   try {
+//     const card = await Card.findByIdAndUpdate(
+//       cardId,
+//       { $addToSet: { likes: currentUser } },
+//       { new: true }
+//     );
+
+//     if (!card) {
+//       return next(new NoDataError('Wrong like id'));
+//     }
+
+//     return res.status(200).json(card);
+//   } catch (error) {
+//     if (error.name === 'ValidationError' || error.name === 'CastError') {
+//       return next(
+//         new InvalidRequst(
+//           'Переданы некорректные данные при добавлении лайка карточке'
+//         )
+//       );
+//     }
+//     return next(error);
+//   }
+// };
+
+module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
+  const { userId } = req.user;
 
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
-  // Fetch the current user information from req.user (provided by the auth middleware)
-  const currentUser = await User.findById(payload);
-  // if (!mongoose.Types.ObjectId.isValid(cardId)) {
-  //   return res
-  //     .status(ERROR_CODE)
-  //     .json({ error: 'Invalid card ID', message: 'Wrong like id' });
-  // }
+  Card.findByIdAndUpdate(
+    cardId,
+    {
+      $addToSet: {
+        likes: userId,
+      },
+    },
+    {
+      new: true,
+    },
+  )
+    .then((card) => {
+      if (card) return res.send(card);
 
-  try {
-    const card = await Card.findByIdAndUpdate(
-      cardId,
-      { $addToSet: { likes: currentUser } },
-      { new: true }
-    );
-
-    if (!card) {
-      return next(new NoDataError('Wrong like id'));
-    }
-
-    // if (card.likes.includes(userId)) {
-    //   return res.status(ERROR_CODE).json({
-    //     error: 'User has already liked this card',
-    //     message: 'Incorrect like id',
-    //   });
-    // }
-
-    return res.status(200).json(card);
-  } catch (error) {
-    if (error.name === 'ValidationError' || error.name === 'CastError') {
-      return next(
-        new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке'
-        )
-      );
-    }
-    return next(error);
-  }
+      throw new NoDataError('Карточка с указанным id не найдена');
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        next(
+          new InvalidRequst(
+            'Переданы некорректные данные при добавлении лайка карточке',
+          ),
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
 // DELETE /cards/:cardId/likes — убрать лайк с карточки
 module.exports.dislikeCard = async (req, res, next) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
+
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
+  // Fetch the current user information from req.user (provided by the auth middleware)
+  const currentUser = await Card.findById(payload);
 
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
-      { $pull: { likes: userId } },
-      { new: true }
+      { $pull: { likes: currentUser } },
+      { new: true },
     );
 
     if (!card) {
@@ -128,8 +153,8 @@ module.exports.dislikeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке'
-        )
+          'Переданы некорректные данные при добавлении лайка карточке',
+        ),
       );
     }
     return next(error);
