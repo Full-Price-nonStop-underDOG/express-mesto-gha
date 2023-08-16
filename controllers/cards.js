@@ -49,9 +49,6 @@ module.exports.deleteCard = async (req, res, next) => {
     }
 
     if (String(card.owner) !== String(currentUser._id)) {
-      console.log(card);
-      console.log(currentUser._id);
-
       // Check if the requesting user is the owner of the card
       return res
         .status(403)
@@ -63,7 +60,7 @@ module.exports.deleteCard = async (req, res, next) => {
     return res.status(200).json({ message: 'Card deleted successfully' });
   } catch (error) {
     if (error.name === 'CastError') {
-      return next(new InvalidRequst('Wrong card id'));
+      return next(new InvalidRequst({ message: 'Wrong card id' }));
     }
     return next(error);
   }
