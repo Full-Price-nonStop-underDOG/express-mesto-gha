@@ -35,7 +35,7 @@ module.exports.createCard = (req, res, next) => {
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
-  const { userId } = req.params; // Get the ID of the current user
+  const { userId } = req.user; // Get the ID of the current user
 
   try {
     const card = await Card.findById(cardId);
