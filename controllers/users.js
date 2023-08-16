@@ -16,9 +16,7 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return next(
-        new TokenInvalidError({ message: 'Invalid email or password' }),
-      );
+      return next(new TokenInvalidError('Invalid email or password'));
     }
 
     const payload = { _id: user._id };
@@ -139,9 +137,9 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(
-          new ServerConflictError({
-            message: 'Пользователь с таким электронным адресом уже существует',
-          }),
+          new ServerConflictError(
+            'Пользователь с таким электронным адресом уже существует',
+          ),
         );
       } else if (err.name === 'ValidationError') {
         // В случае ошибки валидации отправляем ошибку 400
