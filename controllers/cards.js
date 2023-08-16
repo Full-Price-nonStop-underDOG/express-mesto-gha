@@ -113,7 +113,7 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       if (card) return res.send(card);
 
-      throw new NoDataError('Карточка с указанным id не найдена');
+      throw new NoDataError({ message: 'Карточка с указанным id не найдена' });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -132,20 +132,16 @@ module.exports.likeCard = (req, res, next) => {
 module.exports.dislikeCard = async (req, res, next) => {
   const { cardId } = req.params;
 
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
-  // Fetch the current user information from req.user (provided by the auth middleware)
-  const currentUser = await Card.findById(payload);
-
+  const { userId } = req.user;
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
-      { $pull: { likes: currentUser } },
+      { $pull: { likes: userId } },
       { new: true }
     );
 
     if (!card) {
-      return next(new NoDataError('Wrong like id'));
+      return next(new NoDataError({ message: 'Wrong like id' }));
     }
 
     return res.status(200).json(card);
