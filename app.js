@@ -86,8 +86,8 @@ app.use((err, req, res, next) => {
     // Если есть details, это означает ошибку валидации
     statusCode = 400;
   }
-
-  const message = statusCode === 500 ? 'Ошибка на стороне сервера' : err.message;
+  console.log(err);
+  const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
   res.status(statusCode).json(message);
   next();
 });
