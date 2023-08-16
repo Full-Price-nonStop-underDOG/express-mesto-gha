@@ -5,6 +5,13 @@ const User = require('../models/user');
 const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 
+function getUserId(req) {
+  const { token } = req.cookies;
+  const payload = jwt.decode(token);
+  const currentUser = User.findById(payload);
+  return currentUser._id;
+}
+
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res, next) => {
   Card.find()
@@ -37,9 +44,9 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
 
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
-  const currentUser = await User.findById(payload); // Get the ID of the current user
+  // const { token } = req.cookies;
+  // const payload = jwt.decode(token);
+  // const currentUser = await User.findById(payload); // Get the ID of the current user
 
   try {
     const card = await Card.findById(cardId);
@@ -48,7 +55,7 @@ module.exports.deleteCard = async (req, res, next) => {
       return next(new NoDataError('Card not found'));
     }
 
-    if (String(card.owner) !== String(currentUser._id)) {
+    if (String(card.owner) !== String(getUserId(req))) {
       // Check if the requesting user is the owner of the card
       return res
         .status(403)

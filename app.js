@@ -78,7 +78,11 @@ router.post(
   }),
   createUser,
 );
-
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
 app.use(errors());
 app.use((err, req, res, next) => {
   let statusCode = err.statusCode || 500;
@@ -86,7 +90,7 @@ app.use((err, req, res, next) => {
     // Если есть details, это означает ошибку валидации
     statusCode = 400;
   }
-  console.log(err);
+
   const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
   res.status(statusCode).json(message);
   next();
