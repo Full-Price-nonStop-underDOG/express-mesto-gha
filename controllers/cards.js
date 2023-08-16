@@ -45,14 +45,14 @@ module.exports.deleteCard = async (req, res, next) => {
     const card = await Card.findById(cardId);
 
     if (!card) {
-      return next(new NoDataError({ message: 'Card not found' }));
+      return next(new NoDataError('Card not found'));
     }
 
     if (String(card.owner) !== String(currentUser._id)) {
       // Check if the requesting user is the owner of the card
       return res
         .status(403)
-        .json({ message: 'You do not have permission to delete this card' });
+        .json('You do not have permission to delete this card');
     }
 
     await Card.findByIdAndDelete(cardId);
@@ -60,7 +60,7 @@ module.exports.deleteCard = async (req, res, next) => {
     return res.status(200).json({ message: 'Card deleted successfully' });
   } catch (error) {
     if (error.name === 'CastError') {
-      return next(new InvalidRequst({ message: 'Wrong card id' }));
+      return next(new InvalidRequst('Wrong card id'));
     }
     return next(error);
   }
@@ -145,7 +145,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     );
 
     if (!card) {
-      return next(new NoDataError({ message: 'Wrong like id' }));
+      return next(new NoDataError('Wrong like id'));
     }
 
     return res.status(200).json(card);
