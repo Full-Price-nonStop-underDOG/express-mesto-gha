@@ -82,18 +82,17 @@ router.post(
 app.use(errors());
 
 app.use('*', (req, res, next) => {
-  const err = new Error({ message: 'Not Found' });
+  const err = new Error('Not Found');
   err.statusCode = 404;
   next(err);
 });
-app.use((err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  if (err.details) {
-    // Если есть details, это означает ошибку валидации
-    statusCode = 400;
-  }
 
+// Обработка ошибок и отправка ответа
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
   const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
-  res.status(statusCode).json(message);
+
+  // Возвращаем объект с полем message
+  res.status(statusCode).json({ message });
   next();
 });
