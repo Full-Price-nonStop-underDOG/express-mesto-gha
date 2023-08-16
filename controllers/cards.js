@@ -5,13 +5,6 @@ const User = require('../models/user');
 const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 
-function getUserId(req) {
-  const { token } = req.cookies;
-  const payload = jwt.decode(token);
-  const currentUser = User.findById(payload);
-  return currentUser._id;
-}
-
 // GET /cards — возвращает все карточки
 module.exports.getAllCards = (req, res, next) => {
   Card.find()
@@ -32,8 +25,8 @@ module.exports.createCard = (req, res, next) => {
       if (error.name === 'ValidationError') {
         return next(
           new InvalidRequst(
-            'Переданы некорректные данные при создании карточки'
-          )
+            'Переданы некорректные данные при создании карточки',
+          ),
         );
       }
       return next(error);
@@ -52,7 +45,7 @@ module.exports.deleteCard = async (req, res, next) => {
     const card = await Card.findById(cardId);
 
     if (!card) {
-      return next(new NoDataError('Card not found'));
+      return next(new NoDataError({ message: 'Card not found' }));
     }
 
     if (String(card.owner) !== String(currentUser._id)) {
@@ -119,7 +112,7 @@ module.exports.likeCard = (req, res, next) => {
     },
     {
       new: true,
-    }
+    },
   )
     .then((card) => {
       if (card) return res.send(card);
@@ -130,8 +123,8 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(
           new InvalidRequst(
-            'Переданы некорректные данные при добавлении лайка карточке'
-          )
+            'Переданы некорректные данные при добавлении лайка карточке',
+          ),
         );
       } else {
         next(err);
@@ -148,7 +141,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     const card = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: userId } },
-      { new: true }
+      { new: true },
     );
 
     if (!card) {
@@ -160,8 +153,8 @@ module.exports.dislikeCard = async (req, res, next) => {
     if (error.name === 'ValidationError' || error.name === 'CastError') {
       return next(
         new InvalidRequst(
-          'Переданы некорректные данные при добавлении лайка карточке'
-        )
+          'Переданы некорректные данные при добавлении лайка карточке',
+        ),
       );
     }
     return next(error);

@@ -15,15 +15,14 @@ const { login, createUser } = require('./controllers/users');
 
 app.use(cookieParser());
 
-const urlRegex =
-  /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
+const urlRegex = /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
 app.use(
   cors({
     origin: 'http://localhost:3001',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -63,7 +62,7 @@ router.post(
       password: Joi.string().required().min(6),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -77,10 +76,16 @@ router.post(
       avatar: Joi.string().pattern(urlRegex),
     }),
   }),
-  createUser
+  createUser,
 );
 
 app.use(errors());
+
+app.use('*', (req, res, next) => {
+  const err = new Error({ message: 'Not Found' });
+  err.statusCode = 404;
+  next(err);
+});
 app.use((err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   if (err.details) {
@@ -88,8 +93,7 @@ app.use((err, req, res, next) => {
     statusCode = 400;
   }
 
-  const message =
-    statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
+  const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
   res.status(statusCode).json(message);
   next();
 });
