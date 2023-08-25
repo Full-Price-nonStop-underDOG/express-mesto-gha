@@ -20,7 +20,7 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3000',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
@@ -35,7 +35,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.listen(3000, () => {});
+app.listen(3001, () => {});
 // app.use((req, res, next) => {
 //   req.user = {
 //     _id: '64c1194f6128cbaa7041d519', //
