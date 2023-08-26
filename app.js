@@ -20,7 +20,7 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://korvin.boy.nomoredomainsicu.ru',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
