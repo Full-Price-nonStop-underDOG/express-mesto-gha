@@ -20,12 +20,22 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://korvin.boy.nomoredomainsicu.ru',
+    origin: 'http://localhost:3000',
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
 );
-
+app.use((req, res, next) => {
+  res.header(
+    'Access-Control-Allow-Origin',
+    'http://korvin.boy.nomoredomainsicu.ru'
+  ); // Замените на свой домен
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
+});
 app.use(express.json());
 
 app.use(bodyParser.json());
