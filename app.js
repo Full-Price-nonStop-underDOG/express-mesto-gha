@@ -28,7 +28,7 @@ app.use(
 app.use((req, res, next) => {
   res.header(
     'Access-Control-Allow-Origin',
-    'http://korvin.boy.nomoredomainsicu.ru'
+    'http://korvin.boy.nomoredomainsicu.ru/sign-up'
   ); // Замените на свой домен
   res.header(
     'Access-Control-Allow-Headers',
