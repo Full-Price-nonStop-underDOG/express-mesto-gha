@@ -22,6 +22,11 @@ app.use(
   cors({
     origin: ['http://localhost:3000', 'http://korvin.boy.nomoredomainsicu.ru'],
     credentials: true,
+    allowedHeaders: [
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Headers',
+      'Content-Type',
+    ],
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
 );
