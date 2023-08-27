@@ -20,7 +20,7 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3000','http://korvin.boy.nomoredomainsicu.ru' ,
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   res.header(
     'Access-Control-Allow-Origin',
     'http://korvin.boy.nomoredomainsicu.ru/sign-up'
-  ); // Замените на свой домен
+  );
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
