@@ -18,15 +18,23 @@ app.use(cookieParser());
 const urlRegex =
   /^(https?:\/\/)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(:\d{2,5})?(\/[^\s]*)?$/;
 
+// app.use(
+//   cors({
+//     origin: ['http://localhost:3000', 'http://korvin.boy.nomoredomainsicu.ru'],
+//     credentials: true,
+//     allowedHeaders: [
+//       'Access-Control-Allow-Origin',
+//       'Access-Control-Allow-Headers',
+//       'Content-Type',
+//     ],
+//     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
+//   })
+// );
+
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://korvin.boy.nomoredomainsicu.ru'],
+    origin: '*',
     credentials: true,
-    allowedHeaders: [
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Headers',
-      'Content-Type',
-    ],
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
 );
