@@ -115,9 +115,10 @@ app.use('*', (req, res, next) => {
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message =
-    statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
+    statusCode === 500
+      ? `На сервере произошла ошибка: ${err.message}`
+      : err.message;
 
   // Возвращаем объект с полем message
   res.status(statusCode).json({ message });
-  next();
 });

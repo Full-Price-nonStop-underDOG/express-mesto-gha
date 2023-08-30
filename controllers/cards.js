@@ -36,10 +36,12 @@ module.exports.createCard = (req, res, next) => {
 // DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
+  const { authorization: bearerToken } = req.headers;
+  const token = bearerToken.replace('Bearer ', '');
 
-  const { token } = req.cookies;
   const payload = jwt.decode(token);
-  const currentUser = await User.findById(payload); // Get the ID of the current user
+
+  const currentUser = await User.findById(payload._id); // Get the ID of the current user
 
   try {
     const card = await Card.findById(cardId);
@@ -101,7 +103,7 @@ module.exports.deleteCard = async (req, res, next) => {
 
 module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
-  const { userId } = req.user;
+  const userId = req.user._id;
 
   Card.findByIdAndUpdate(
     cardId,
@@ -136,7 +138,7 @@ module.exports.likeCard = (req, res, next) => {
 module.exports.dislikeCard = async (req, res, next) => {
   const { cardId } = req.params;
 
-  const { userId } = req.user;
+  const userId = req.user._id;
   try {
     const card = await Card.findByIdAndUpdate(
       cardId,
