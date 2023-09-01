@@ -103,6 +103,7 @@ module.exports.deleteCard = async (req, res, next) => {
 
 module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
+  console.log(req.user._id);
   const userId = req.user._id;
 
   Card.findByIdAndUpdate(

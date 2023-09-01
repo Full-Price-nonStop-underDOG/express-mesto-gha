@@ -162,7 +162,7 @@ module.exports.updateProfile = (req, res, next) => {
   const payload = jwt.decode(this.getToken(req));
 
   User.findByIdAndUpdate(
-    payload,
+    payload._id,
     { name, about },
     { new: true, runValidators: true }
   )
@@ -187,8 +187,7 @@ module.exports.updateProfile = (req, res, next) => {
 // PATCH /users/me/avatar — обновляет аватар
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const { token } = req.headers;
-  const payload = jwt.decode(token);
+  const payload = jwt.decode(this.getToken(req));
 
   return User.findByIdAndUpdate(
     payload,
