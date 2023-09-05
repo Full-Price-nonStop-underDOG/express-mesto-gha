@@ -8,7 +8,7 @@ const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
 
-module.exports.getToken = (req, res, next) => {
+module.exports.getToken = (req) => {
   const { authorization: bearerToken } = req.headers;
   const token = bearerToken.replace('Bearer ', '');
   return token;
