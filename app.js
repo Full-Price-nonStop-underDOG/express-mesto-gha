@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
+const logger = require('./logger');
 
 const app = express();
 
@@ -66,6 +67,13 @@ app.listen(3001, () => {});
 
 //   next();
 // });
+app.use((req, res, next) => {
+  // Логируем запрос
+  logger.info(`Received a request to ${req.method} ${req.url}`, {
+    user: req.user, // информация о пользователе
+  });
+  next();
+});
 
 app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
@@ -108,6 +116,15 @@ app.use(errors());
 app.use('*', (req, res, next) => {
   const err = new Error('Not Found');
   err.statusCode = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  // Логируем ошибку
+  logger.error('Error:', { error: err, stack: err.stack });
+
+  // Отправляем ошибку клиенту
+  res.status(500).json({ error: 'Internal Server Error' });
   next(err);
 });
 
