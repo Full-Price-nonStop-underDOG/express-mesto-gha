@@ -7,6 +7,7 @@ const InvalidRequst = require('../errors/invalidRequest');
 const NoDataError = require('../errors/noDataError');
 const ServerConflictError = require('../errors/serverConflictError');
 const TokenInvalidError = require('../errors/tokenInvalidError');
+require('dotenv').config();
 
 module.exports.getToken = (req) => {
   const { authorization: bearerToken } = req.headers;
@@ -25,7 +26,9 @@ module.exports.login = async (req, res, next) => {
     }
 
     const payload = { _id: user._id };
-    const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '7d' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
