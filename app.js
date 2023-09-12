@@ -61,9 +61,9 @@ app.use((req, res, next) => {
 
 app.use(router);
 app.use(routerCards);
-router.use((req, res, next) =>
-  next(new NoDataError('Страницы по запрошенному URL не существует'))
-);
+// router.use((req, res, next) =>
+//   next(new NoDataError('Страницы по запрошенному URL не существует'))
+// );
 
 router.post(
   '/signin',
