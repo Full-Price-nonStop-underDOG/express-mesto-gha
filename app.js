@@ -11,6 +11,7 @@ const app = express();
 const router = require('./routes/users');
 const routerCards = require('./routes/cards');
 const authMiddleware = require('./middlewares/auth');
+const NoDataError = require('./errors/noDataError');
 
 const { login, createUser } = require('./controllers/users');
 
@@ -57,15 +58,16 @@ app.use((req, res, next) => {
     authMiddleware(req, res, next); // Apply authMiddleware for other routes
   }
 });
-
-app.use(router);
-app.use(routerCards);
-
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
+app.use(router);
+app.use(routerCards);
+router.use((req, res, next) =>
+  next(new NoDataError('Страницы по запрошенному URL не существует'))
+);
 
 router.post(
   '/signin',
