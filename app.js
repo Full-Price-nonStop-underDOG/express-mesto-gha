@@ -39,18 +39,18 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 
 app.listen(3001, () => {});
 
-// app.use((req, res, next) => {
-//   // Логируем запрос
-//   logger.info(`Received a request to ${req.method} ${req.url}`, {
-//     user: req.user, // информация о пользователе
-//   });
-//   next();
-// });
-// app.get('/crash-test', () => {
-//   setTimeout(() => {
-//     throw new Error('Сервер сейчас упадёт');
-//   }, 0);
-// });
+app.use((req, res, next) => {
+  // Логируем запрос
+  logger.info(`Received a request to ${req.method} ${req.url}`, {
+    user: req.user, // информация о пользователе
+  });
+  next();
+});
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
     next(); // Skip auth for signup and signin
@@ -100,7 +100,7 @@ app.use('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
   // Логируем ошибку
-  //logger.error(`Error: ${err.message}`, { stack: err.stack });
+  logger.error(`Error: ${err.message}`, { stack: err.stack });
 
   // Отправляем ошибку клиенту
   const statusCode = err.statusCode || 500;
