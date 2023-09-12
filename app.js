@@ -22,10 +22,9 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://korvin.boy.nomoredomainsicu.ru', // Разрешить запросы с этого домена
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Разрешенные HTTP-методы
-    credentials: true, // Разрешить передавать куки и аутентификацию
-    optionsSuccessStatus: 204, // Устанавливаем статус 204 для предварительных запросов
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
 );
 
@@ -47,11 +46,11 @@ app.listen(3000, () => {});
 //   });
 //   next();
 // });
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
+// app.get('/crash-test', () => {
+//   setTimeout(() => {
+//     throw new Error('Сервер сейчас упадёт');
+//   }, 0);
+// });
 app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
     next(); // Skip auth for signup and signin
