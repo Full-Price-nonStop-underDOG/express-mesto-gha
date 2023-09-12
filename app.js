@@ -22,7 +22,7 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'https://korvin.boy.nomoredomainsicu.ru', // Укажите домен клиента здесь
+    origin: 'http://korvin.boy.nomoredomainsicu.ru', // Укажите домен клиента здесь
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   })
