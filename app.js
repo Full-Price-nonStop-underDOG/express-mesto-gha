@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
-const logger = require('./logger');
+const { requestLogger, errorLogger } = require('./logger');
 
 const app = express();
 
@@ -58,7 +58,7 @@ app.use((req, res, next) => {
     authMiddleware(req, res, next); // Apply authMiddleware for other routes
   }
 });
-
+app.use(requestLogger);
 app.use(router);
 app.use(routerCards);
 // router.use((req, res, next) =>
@@ -89,7 +89,7 @@ router.post(
   }),
   createUser
 );
-
+app.use(errorLogger);
 app.use(errors());
 
 app.use('*', (req, res, next) => {
