@@ -22,9 +22,10 @@ const urlRegex =
 
 app.use(
   cors({
-    origin: 'http://korvin.boy.nomoredomainsicu.ru', // Укажите домен клиента здесь
-    credentials: true,
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
+    origin: 'http://korvin.boy.nomoredomainsicu.ru', // Разрешить запросы с этого домена
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Разрешенные HTTP-методы
+    credentials: true, // Разрешить передавать куки и аутентификацию
+    optionsSuccessStatus: 204, // Устанавливаем статус 204 для предварительных запросов
   })
 );
 
