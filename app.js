@@ -46,23 +46,19 @@ app.use((req, res, next) => {
   });
   next();
 });
-
-app.use((req, res, next) => {
-  if (
-    req.url === '/signup' ||
-    req.url === '/signin' ||
-    req.url === '/crash-test'
-  ) {
-    next(); // Skip auth for signup and signin
-  } else {
-    authMiddleware(req, res, next); // Apply authMiddleware for other routes
-  }
-});
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
+app.use((req, res, next) => {
+  if (req.url === '/signup' || req.url === '/signin') {
+    next(); // Skip auth for signup and signin
+  } else {
+    authMiddleware(req, res, next); // Apply authMiddleware for other routes
+  }
+});
+
 app.use(router);
 app.use(routerCards);
 router.use((req, res, next) =>
