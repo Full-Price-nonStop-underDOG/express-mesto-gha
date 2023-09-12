@@ -37,7 +37,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 });
 
-app.listen('http://korvin.boy.nomoredomainsicu.ru/sign-in', () => {});
+app.listen(3001, () => {});
 
 app.get('/crash-test', () => {
   setTimeout(() => {
