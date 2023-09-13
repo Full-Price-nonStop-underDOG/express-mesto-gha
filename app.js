@@ -48,7 +48,7 @@ app.use((req, res, next) => {
   if (req.url === '/signup' || req.url === '/signin') {
     next(); // Skip auth for signup and signin
   } else {
-    authMiddleware(req, res, next); // Appply authMiddleware for other routes
+    authMiddleware(req, res, next); // Appply authMiddleware for other route
   }
 });
 app.use(requestLogger);
